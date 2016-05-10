@@ -1,0 +1,28 @@
+    {% load staticfiles %}
+
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="{% static "assets/plugins/jquery-1.8.2/jquery-1.8.2.min.js" %}"></script>
+    <script src="{% static "assets/plugins/jquery-ui-1.10.4/ui/minified/jquery-ui.min.js" %}"></script>
+    <script src="{% static "assets/plugins/bootstrap-3.2.0/js/bootstrap.min.js" %}"></script>
+    <!--[if lt IE 9]>
+        <script src="{% static "assets/crossbrowserjs/html5shiv.js" %}"></script>
+        <script src="{% static "assets/crossbrowserjs/respond.min.js" %}"></script>
+        <script src="{% static "assets/crossbrowserjs/excanvas.min.js" %}"></script>
+    <![endif]-->
+    <script src="{% static "assets/plugins/slimscroll/jquery.slimscroll.min.js" %}"></script>
+    <script src="{% static "assets/plugins/jquery-cookie/jquery.cookie.js" %}"></script>
+    <!-- ================== END BASE JS ================== -->
+
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="{% static "assets/js/dashboard.min.js" %}"></script>
+    <script src="{% static "assets/js/login-v2.demo.min.js" %}"></script>
+    <script src="{% static "assets/js/apps.min.js" %}"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+    <script>
+      $(document).ready(function() {
+        App.init();
+        {% if messages %}
+        $("#dialog").modal('toggle');
+        {% endif %}
+      });
+    </script>

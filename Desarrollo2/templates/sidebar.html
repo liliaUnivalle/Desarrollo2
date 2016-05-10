@@ -1,0 +1,31 @@
+        <!-- begin #sidebar -->
+        <div id="sidebar" class="sidebar">
+            <!-- begin sidebar scrollbar -->
+            <div data-scrollbar="true" data-height="100%">
+                {% if user.is_authenticated %}
+                <!-- begin sidebar user -->
+                <ul class="nav">
+                    <li class="nav-profile">
+                        <div class="image">
+                            <a href="javascript:;"><img src="assets/img/user-13.jpg" alt="" /></a>
+                        </div>
+                        <div class="info">
+                            Sean Ngu
+                            <small>Front end developer</small>
+                        </div>
+                    </li>
+                </ul>
+                <!-- end sidebar user -->
+                {% endif %}
+                <!-- begin sidebar nav -->
+                {% if user.is_authenticated %}
+                {% include 'private_navbar.html' %}
+                {% else %}
+                {% include 'public_navbar.html' %}
+                {% endif %}
+                <!-- end sidebar nav -->
+            </div>
+            <!-- end sidebar scrollbar -->
+        </div>
+        <div class="sidebar-bg"></div>
+        <!-- end #sidebar -->
