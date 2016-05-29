@@ -20,6 +20,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('applications.start.urls',namespace='start')),
+    url(r'^', include('applications.movies.urls',namespace='movies')),
     #url(r'^', include('applications.movies.urls',namespace='movies')),
 ]

@@ -4,7 +4,9 @@ from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib import admin
 from .views import IndexView
+from .views import Prueba
 
 urlpatterns = [
-    url('^$', IndexView.as_view(), name='index'),
+    url('^$', Prueba.as_view(), name='index'),
+    url('^$', IndexView.as_view(), name='prueba'),
 ]
