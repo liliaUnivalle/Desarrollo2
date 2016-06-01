@@ -7,6 +7,6 @@ from .views import IndexView
 from .views import Prueba
 
 urlpatterns = [
-    url('^$', Prueba.as_view(), name='index'),
+    url(r'^movies/movie/$', Prueba.as_view(), name='index'),
     url('^$', IndexView.as_view(), name='prueba'),
 ]
