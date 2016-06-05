@@ -3761,7 +3761,7 @@ ul.tagit.inverse li.tagit-choice .tagit-close:focus .ui-icon-close:before {
 }
 .login .login-header {
     position: absolute;
-    top: -80px;
+    top: 80px;
     left: 50%;
     right: 0;
     width: 450px;

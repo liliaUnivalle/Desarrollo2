@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en" ng-app="osso">
 
@@ -13,6 +15,7 @@
 
 </head>
 <body>
+{%if authentication%}
     <!-- begin #page-loader -->
     <div id="page-loader" class="fade in"><span class="spinner"></span></div>
     <!-- end #page-loader -->
@@ -43,6 +46,8 @@
     {% block js %}
     {% include 'js.html' %}
     {% endblock %}
-
+{% else %}
+    No se ha iniciado sesion. vaya a <a href="{% url 'authentication:login' %}"> Iniciar sesion </a>
+{% endif %}
 </body>
 </html>

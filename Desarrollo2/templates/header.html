@@ -1,3 +1,4 @@
+{% load staticfiles %}
         <!-- begin #header -->
         <div id="header" class="header navbar navbar-default navbar-fixed-top">
             <!-- begin container-fluid -->
@@ -5,8 +6,7 @@
                 <!-- begin mobile sidebar expand / collapse button -->
                 <div class="navbar-header">
                     <a href="/" class="navbar-brand">
-                        <span class="navbar-logo"></span> <!--logo-->
-                        EMLA Films
+                        <img src="{% static "assets/img/logo.png" %}" data-id="login-cover-image" alt="" />
                     </a>
                     <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                         <span class="icon-bar"></span>
@@ -42,7 +42,7 @@
                     <li class="dropdown navbar-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="assets/img/user-13.png" alt="" />
-                            <span class="hidden-xs">Adam Schwartz</span> <b class="caret"></b>
+                            <span class="hidden-xs">{{nombre}}</span> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu animated fadeInLeft">
                             <li class="arrow"></li>

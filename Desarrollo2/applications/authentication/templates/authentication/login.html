@@ -31,13 +31,19 @@
             <!-- begin brand -->
             <div class="login-header">
                 <div class="brand">
-                    <span class="logo"></span> EMLA
-                    <small>Films</small>
-                </div>
+                    <img src="{% static "assets/img/logo.png" %}" data-id="login-cover-image" alt="" />
+                </div>                
             </div>
             <!-- end brand -->
             <div class="login-content">
+                
                 <form action="{% url 'authentication:login' %}" method="POST" class="margin-bottom-0"> {% csrf_token %}
+                    {% if messageB %}
+                      <div class="alert alert-success">{{message}}</div>
+                    {% endif %}
+                    {% if messageT %}
+                      <div class="alert alert-danger">{{message}}</div>
+                    {% endif %}
                     <div class="form-group m-b-20">
                         <input name="username" type="text" class="form-control input-lg" placeholder="Correo Univalle" />
                     </div>
@@ -60,14 +66,14 @@
         </div>
         <!-- end login -->
 
-        <ul class="login-bg-list">
+        <!--<ul class="login-bg-list">
             <li><a href="#" data-click="change-bg"><img src="{% static "assets/img/login-bg/bg-1.jpg" %}" alt="" /></a></li>
             <li><a href="#" data-click="change-bg"><img src="{% static "assets/img/login-bg/bg-2.jpg" %}" alt="" /></a></li>
             <li><a href="#" data-click="change-bg"><img src="{% static "assets/img/login-bg/bg-3.jpg" %}" alt="" /></a></li>
             <li class="active"><a href="#" data-click="change-bg"><img src="{% static "assets/img/login-bg/bg-4.jpg" %}" alt="" /></a></li>
             <li><a href="#" data-click="change-bg"><img src="{% static "assets/img/login-bg/bg-5.jpg" %}" alt="" /></a></li>
             <li><a href="#" data-click="change-bg"><img src="{% static "assets/img/login-bg/bg-6.jpg" %}" alt="" /></a></li>
-        </ul>
+        </ul>-->
 
     </div>
     <!-- end page container -->

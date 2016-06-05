@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 import models
-from applications.movies.models import Pelicula
+from applications.users.models import Usuario
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 
@@ -24,14 +24,11 @@ class Prueba(TemplateView):
 	def get(self,request,*args, **kwargs):
 		lol = "r"
 		l = "apsito"
-		pelicula = Pelicula(
-			codigo=1,
-			titulo="lol",
-			imagen="1.jpeg",
-			descripcion="ejhfawegbsrhag",
-			an_o="2016",
-			trailer="este es un trailer",
-			fecha_estreno="11 abril 2017"
+		pelicula = Usuario(
+			email="dhurvrfb",
+			nombre="mateo",
+			contrasena="1234567",
+			tipo="admin"
 			)
 		pelicula.save()
 
