@@ -5,8 +5,10 @@ from django.conf.urls import include
 from django.contrib import admin
 from .views import LoginPage
 from .views import RegisterPage
+from .views import Index
 
 urlpatterns = [
-    url('^$', LoginPage.as_view(), name='login'),
+    url('^$', Index.as_view(), name='index'),
+    url(r'^login/$', LoginPage.as_view(), name='login'),
     url(r'^register/$', RegisterPage.as_view(), name='register'),
  ]

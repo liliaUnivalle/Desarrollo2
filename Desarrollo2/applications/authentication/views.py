@@ -101,3 +101,14 @@ class RegisterPage(TemplateView):
 			'authentication/register.html',
 			context,
 			context_instance=RequestContext(request))
+
+class Index(TemplateView):
+	def get(self, request, *args, **kwargs):
+		return render_to_response(
+			'authentication/index.html',
+			context_instance=RequestContext(request))
+
+	def post(self,request,*args,**kwargs):
+		return render_to_response(
+			'authentication/login.html',
+			context_instance=RequestContext(request))
