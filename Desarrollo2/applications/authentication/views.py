@@ -15,8 +15,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
 from .forms import GetRegister
+from .forms import extraerGeneroTotales
 # Create your views here.
 
+
+#Templates----------------------------------------------------------------------------------
 class LoginPage(TemplateView):
 
 	def get(self,request,*args,**kwargs):
@@ -60,7 +63,9 @@ class RegisterPage(TemplateView):
 
 	def get(self,request,*args,**kwargs):
 		form = GetRegister()
-		return render(request, 'authentication/register.html', {'form': form}) 
+		generos = extraerGeneroTotales()
+		context = {'form': form, 'generos':generos}
+		return render(request, 'authentication/register.html', context) 
 
 	def post(self,request,*args,**kwargs):
 		form = GetRegister(request.POST)
@@ -72,6 +77,10 @@ class RegisterPage(TemplateView):
 			name = cd['nombre']
 			contrasena1 = cd['contrasena1']
 			contrasena2 = cd['contrasena2']
+			generos = cd['option']
+			#for item in cd['option']:
+			#	generos.append(item)
+			print generos
 			if(contrasena2 == contrasena1):
 				try:
 					usuario_p = Usuario.objects.get(email=email)
@@ -93,10 +102,10 @@ class RegisterPage(TemplateView):
 					context_instance=RequestContext(request))
 			else:	
 				message = "Las contraseñas no coinciden."
-				
-
+			
+		generos = extraerGeneroTotales()
 		message = "Debe llenar todos los campos"
-		context = { 'form':form, 'message':message, 'messageB':messageB}
+		context = { 'form':form, 'message':message, 'messageB':messageB, 'generos':generos}
 		return render_to_response(
 			'authentication/register.html',
 			context,

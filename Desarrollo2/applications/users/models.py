@@ -61,7 +61,7 @@ class ContieneColeccion(models.Model):
 class Califica(models.Model):
 	codigo = models.ForeignKey(Pelicula, related_name="califica")
 	email = models.ForeignKey(Usuario, related_name="califica")
-	valor_Calificacion = models.IntegerField(max_length=1,null=True,blank=True)
+	valor_Calificacion = models.IntegerField(null=True,blank=True)
 
 	class Meta:
 		unique_together = ('codigo', 'email')

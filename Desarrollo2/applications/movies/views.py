@@ -12,6 +12,20 @@ from applications.users.models import Usuario
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 
+class Pelicula:
+
+	def __init__(self, id, titulo, imagen, descripcion, fecha_estreno,trailer,reviews,generos):
+		self.id = id
+		self.titulo = titulo
+		self.imagen = imagen
+		self.descripcion = descripcion
+		self.fecha_estreno = fecha_estreno
+		self.trailer = trailer
+		self.reviews = reviews
+		self.generos = generos
+
+
+#Templates-------------------------------------------------------------------------------------------------
 class IndexView(TemplateView):
     template_name = 'index.html'
 
