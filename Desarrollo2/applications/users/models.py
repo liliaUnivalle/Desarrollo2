@@ -11,14 +11,6 @@ class Usuario(models.Model):
 	contrasena = models.CharField(max_length=100,null=True,blank=True)
 	tipo = models.CharField(max_length=100,null=True,blank=True)
 
-class Generos(models.Model):
-	id_Genero = models.CharField(max_length=100)
-	nombre  = models.CharField(max_length=100)
-	email = models.ForeignKey(Usuario,related_name="genero2")
-
-	class Meta:
-		unique_together = ('id_Genero', 'email')
-
 class Lista_peliculas_porver(models.Model):
 	email = models.ForeignKey(Usuario, related_name="lista1_1")
 	codigo = models.ForeignKey(Pelicula, related_name="lista1_2")

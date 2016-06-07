@@ -11,3 +11,6 @@ class Critica_calificacion(models.Model):
 	codigo = models.ForeignKey(Pelicula)
 	Critica_calificacion = models.CharField(max_length=700,null=True,blank=True)
 	critico = models.CharField(max_length=100,null=True,blank=True)
+
+class Genero(models.Model):
+	nombre = models.CharField(max_length=100,primary_key=True)

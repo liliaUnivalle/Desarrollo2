@@ -9,14 +9,6 @@ class UsuarioAdmin(admin.ModelAdmin):
 	search_fields = ()
 admin.site.register(Usuario, UsuarioAdmin)
 
-class GenerosAdmin(admin.ModelAdmin):
-	list_display = (
-		'id_Genero','nombre','email'
-		)
-
-	search_fields = ()
-admin.site.register(Generos, GenerosAdmin)
-
 class Lista_peliculas_porverAdmin(admin.ModelAdmin):
 	list_display = (
 		'email','codigo'
