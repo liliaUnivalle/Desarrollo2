@@ -3,7 +3,7 @@ from .models import *
 
 class UsuarioAdmin(admin.ModelAdmin):
 	list_display = (
-		'email','nombre','contrasena','tipo'
+		'email','nombre','contrasena','tipo','get_generos'
 		)
 
 	search_fields = ()

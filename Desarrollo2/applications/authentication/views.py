@@ -15,16 +15,48 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
 from .forms import GetRegister
-from .forms import extraerGeneroTotales
 # Create your views here.
+import tmdbsimple as tmdb
+import sys
+from numpy import *
+#Cambiar por el directorio en el que se encuentre el archivo clasePelicula
+sys.path.append('./Desktop')
+from applications.movies.views import Pelicula
+from applications.movies.models import Genero
 
+tmdb.API_KEY = 'ce6b4a15c201b1ccc831cf754f9579cc'
+
+
+def extraerGeneroTotales():	
+
+	generos = []
+	objGenero = tmdb.Genres()
+	lista = objGenero.list()
+	generosInfo = lista[u'genres']
+	for i in generosInfo:
+		generos.append(i[u'name'])
+	return generos
+
+def extraerGeneroTotalesBD():	
+
+	objGenero = tmdb.Genres()
+	lista = objGenero.list()
+	generosInfo = lista[u'genres']
+	for i in generosInfo:
+		genero = Genero (
+			nombre = i[u'name']
+			)
+		genero.save()
 
 #Templates----------------------------------------------------------------------------------
 class LoginPage(TemplateView):
 
 	def get(self,request,*args,**kwargs):
-		
+		p = request.session['emailUser']
+		context={'p':p}
+		print p
 		return render_to_response(
+			context,
 			'authentication/login.html', 
 			context_instance=RequestContext(request))
 
@@ -78,9 +110,7 @@ class RegisterPage(TemplateView):
 			contrasena1 = cd['contrasena1']
 			contrasena2 = cd['contrasena2']
 			generos = cd['option']
-			#for item in cd['option']:
-			#	generos.append(item)
-			print generos
+			
 			if(contrasena2 == contrasena1):
 				try:
 					usuario_p = Usuario.objects.get(email=email)
@@ -91,9 +121,13 @@ class RegisterPage(TemplateView):
 						email= email,
 						nombre= name,
 						contrasena= contrasena1,
+						tipo = "Cliente",
 						)
 					
 					usuario.save()
+					for item in generos:
+						genero_p = Genero.objects.get(nombre=item)
+						usuario.generos.add(genero_p)
 					message = "El usuario registrado con exito. Ahora inicie sesión"
 					context = {'messageB':messageB, 'message':message}
 					return render_to_response(
@@ -120,4 +154,12 @@ class Index(TemplateView):
 	def post(self,request,*args,**kwargs):
 		return render_to_response(
 			'authentication/login.html',
+			context_instance=RequestContext(request))
+
+class LoadGenero(TemplateView):
+
+	def get(self,request,*args,**kwargs):
+		extraerGeneroTotalesBD()
+		return render_to_response(
+			'authentication/generos.html', 
 			context_instance=RequestContext(request))

@@ -51,3 +51,12 @@ class Prueba(TemplateView):
 
 			'movies/movie.html',context,
 			context_instance=RequestContext(request))
+
+class Index(TemplateView):
+	def get(self,request,*args, **kwargs):
+		l
+		context = {'lol':lol}
+		return render_to_response(
+
+			'movies/inicio.html',context,
+			context_instance=RequestContext(request))

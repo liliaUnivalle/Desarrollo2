@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from applications.movies.models import Pelicula
+from applications.movies.models import Genero
 from datetime import datetime
 
 # Create your models here.
@@ -10,6 +11,11 @@ class Usuario(models.Model):
 	nombre = models.CharField(max_length=100,null=True,blank=True)
 	contrasena = models.CharField(max_length=100,null=True,blank=True)
 	tipo = models.CharField(max_length=100,null=True,blank=True)
+	generos = models.ManyToManyField(Genero)
+
+	def get_generos(self):
+		return ",".join([str(p.nombre) for p in self.generos.all()])
+
 
 class Lista_peliculas_porver(models.Model):
 	email = models.ForeignKey(Usuario, related_name="lista1_1")

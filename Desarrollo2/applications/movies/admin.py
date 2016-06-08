@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Pelicula
-from .models import Critica_calificacion
+from .models import *
 
 class PeliculaAdmin(admin.ModelAdmin):
 	list_display = (
@@ -9,6 +8,14 @@ class PeliculaAdmin(admin.ModelAdmin):
 
 	search_fields = ()
 admin.site.register(Pelicula, PeliculaAdmin)
+
+class GeneroAdmin(admin.ModelAdmin):
+	list_display = (
+		'nombre',
+		)
+
+	search_fields = ()
+admin.site.register(Genero, GeneroAdmin)
 
 class Critica_calificacionAdmin(admin.ModelAdmin):
 	list_display = (
