@@ -18,5 +18,5 @@ class Critica_calificacion(models.Model):
 
 
 class Genero(models.Model):
-	id = models.CharField(max_length=10,primary_key=True)
-	nombre = models.CharField(max_length=70,null=True,blank=True)
+	id_genero = models.CharField(max_length=10,primary_key=True)
+	nombre = models.CharField(max_length=70,blank=True)

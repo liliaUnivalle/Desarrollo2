@@ -44,7 +44,7 @@ def extraerGeneroTotalesBD():
 	generosInfo = lista[u'genres']
 	for i in generosInfo:
 		genero = Genero (
-			id_genero = i[u'id'],
+			id = i[u'id'],
 			nombre = i[u'name']
 			)
 		genero.save()
