@@ -41,7 +41,7 @@
                     
                     <li class="dropdown navbar-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="assets/img/user-13.png" alt="" />
+                        <img src="{% static "assets/img/user-13.png" %}" data-id="login-cover-image" alt="" />
                             <span class="hidden-xs">{{nombre}}</span> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu animated fadeInLeft">
@@ -51,7 +51,7 @@
                             <li><a href="javascript:;">Calendar</a></li>
                             <li><a href="javascript:;">Setting</a></li>
                             <li class="divider"></li>
-                            <li><a href="javascript:;">Log Out</a></li>
+                            <li><a href="{% url 'authentication:logout' %}">Log Out</a></li>
                         </ul>
                     </li>
                 </ul>

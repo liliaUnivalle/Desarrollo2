@@ -3,31 +3,17 @@ from .models import *
 
 class UsuarioAdmin(admin.ModelAdmin):
 	list_display = (
-		'email','nombre','contrasena','tipo','get_generos'
+		'email','nombre','contrasena','tipo','get_generos', 'get_vistas', 'get_porver'
 		)
 
 	search_fields = ()
 admin.site.register(Usuario, UsuarioAdmin)
 
-class Lista_peliculas_porverAdmin(admin.ModelAdmin):
-	list_display = (
-		'email','codigo'
-		)
 
-	search_fields = ()
-admin.site.register(Lista_peliculas_porver,Lista_peliculas_porverAdmin)
-
-class Lista_peliculas_vistasAdmin(admin.ModelAdmin):
-	list_display = (
-		'email','codigo','fecha'
-		)
-
-	search_fields = ()
-admin.site.register(Lista_peliculas_vistas, Lista_peliculas_vistasAdmin)
 
 class Lista_personalAdmin(admin.ModelAdmin):
 	list_display = (
-		'nombre','email'
+		'nombre','email','get_contenido'
 		)
 
 	search_fields = ()
@@ -35,26 +21,12 @@ admin.site.register(Lista_personal, Lista_personalAdmin)
 
 class ColeccionlAdmin(admin.ModelAdmin):
 	list_display = (
-		'genero','email'
+		'id_genero','email','get_contenido'
 		)
 
 	search_fields = ()
 admin.site.register(Coleccion, ColeccionlAdmin)
-class ContieneColeccionAdmin(admin.ModelAdmin):
-	list_display = (
-		'genero','email','codigo'
-		)
 
-	search_fields = ()
-admin.site.register(ContieneColeccion, ContieneColeccionAdmin)
-
-class ContieneAdmin(admin.ModelAdmin):
-	list_display = (
-		'nombre','email','codigo'
-		)
-
-	search_fields = ()
-admin.site.register(Contiene, ContieneAdmin)
 
 class CalificaAdmin(admin.ModelAdmin):
 	list_display = (
@@ -62,5 +34,14 @@ class CalificaAdmin(admin.ModelAdmin):
 		)
 
 	search_fields = ()
-admin.site.register(Califica, CalificaAdmin)
+admin.site.register(Calificacion, CalificaAdmin)
+
+class GeneroAdmin(admin.ModelAdmin):
+	list_display = (
+		'id_genero',
+		)
+
+	search_fields = ()
+admin.site.register(Genero, GeneroAdmin)
+
 # Register your models here.

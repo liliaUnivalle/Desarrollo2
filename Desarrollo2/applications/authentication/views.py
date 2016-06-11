@@ -22,7 +22,7 @@ from numpy import *
 #Cambiar por el directorio en el que se encuentre el archivo clasePelicula
 sys.path.append('./Desktop')
 from applications.movies.views import Pelicula
-from applications.movies.models import Genero
+from applications.users.models import Genero
 
 tmdb.API_KEY = 'ce6b4a15c201b1ccc831cf754f9579cc'
 
@@ -44,6 +44,7 @@ def extraerGeneroTotalesBD():
 	generosInfo = lista[u'genres']
 	for i in generosInfo:
 		genero = Genero (
+			id_genero = i[u'id'],
 			nombre = i[u'name']
 			)
 		genero.save()
@@ -52,37 +53,51 @@ def extraerGeneroTotalesBD():
 class LoginPage(TemplateView):
 
 	def get(self,request,*args,**kwargs):
-		p = request.session['emailUser']
-		context={'p':p}
-		print p
-		return render_to_response(
-			context,
-			'authentication/login.html', 
-			context_instance=RequestContext(request))
+		try:
+			nombre = request.session['emailUser']
+			authentication = True
+			context={'authentication':authentication, 'nombre':nombre}
+			return render_to_response(
+				'movies/inicio.html',
+				context,
+				context_instance = RequestContext(request)
+				)
+			
+		except:
+			return render_to_response(
+				'authentication/login.html', 
+				context_instance=RequestContext(request))
+
 
 	def post(self,request,*args,**kwargs):
 		username = request.POST['username']
 		password = request.POST['password']
-		print username
 		message =""
 		messageT = True
-		
-		try:
-			usuario_p = Usuario.objects.get(email=username)
-			if(usuario_p.contrasena == password):
-				authentication = True		
-				nombre = usuario_p.nombre
-				request.session['emailUser'] = username		
-				context={'authentication':authentication, 'nombre':nombre}
-				return render_to_response(
-				'movies/movie.html',
-				context,
-				context_instance = RequestContext(request)
-				)
-			else:
-				message = "La contraseña es invalida"
-		except:
-			message = "El usuario no esta registrado"
+		if username!="" and password != "":
+			try:
+				usuario_p = Usuario.objects.get(email=username)
+				if(usuario_p.contrasena == password):
+
+					authentication = True	
+					print "lol"	
+					nombre = usuario_p.email
+					request.session['emailUser'] = username	
+					
+					request.session['nombre'] = usuario_p.nombre	
+					context={'authentication':authentication, 'nombre':nombre}
+					return render_to_response(
+					'movies/inicio.html',
+					context,
+					context_instance = RequestContext(request)
+					)
+				else:
+					message = "La contraseña es invalida"
+			except:
+				message = "El usuario no esta registrado"
+		else:
+			message = "Debe ingresar los datos solicitados"
+
 
 		context = {'message':message, 'messageT':messageT}
 
@@ -136,14 +151,13 @@ class RegisterPage(TemplateView):
 					context_instance=RequestContext(request))
 			else:	
 				message = "Las contraseñas no coinciden."
-			
-		generos = extraerGeneroTotales()
-		message = "Debe llenar todos los campos"
-		context = { 'form':form, 'message':message, 'messageB':messageB, 'generos':generos}
-		return render_to_response(
-			'authentication/register.html',
-			context,
-			context_instance=RequestContext(request))
+		else:
+			message = "Debe llenar todos los campos"
+			context = { 'form':form, 'message':message, 'messageB':messageB}
+			return render_to_response(
+				'authentication/register.html',
+				context,
+				context_instance=RequestContext(request))
 
 class Index(TemplateView):
 	def get(self, request, *args, **kwargs):
@@ -162,4 +176,16 @@ class LoadGenero(TemplateView):
 		extraerGeneroTotalesBD()
 		return render_to_response(
 			'authentication/generos.html', 
+			context_instance=RequestContext(request))
+
+class Logout(TemplateView):
+
+	def get(self,request,*args,**kwargs):
+		try:
+			del request.session['emailUser']
+			del request.session['nombre']
+		except:
+			print "except"
+		return render_to_response(
+			'authentication/login.html', 
 			context_instance=RequestContext(request))

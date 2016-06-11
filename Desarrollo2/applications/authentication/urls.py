@@ -7,10 +7,12 @@ from .views import LoginPage
 from .views import RegisterPage
 from .views import Index
 from .views import LoadGenero
+from .views import Logout
 
 urlpatterns = [
     url('^$', Index.as_view(), name='index'),
     url(r'^login/$', LoginPage.as_view(), name='login'),
     url(r'^register/$', RegisterPage.as_view(), name='register'),
     url(r'^generos/$', LoadGenero.as_view(), name='genero'),
+    url(r'^logout/$', Logout.as_view(), name='logout'),
  ]

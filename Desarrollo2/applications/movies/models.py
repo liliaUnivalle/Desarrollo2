@@ -12,5 +12,11 @@ class Critica_calificacion(models.Model):
 	Critica_calificacion = models.CharField(max_length=700,null=True,blank=True)
 	critico = models.CharField(max_length=100,null=True,blank=True)
 
+	class Meta:
+		verbose_name = 'Critica_calificacion'
+		verbose_name_plural = 'Criticas_calificaciones'
+
+
 class Genero(models.Model):
-	nombre = models.CharField(max_length=100,primary_key=True)
+	id = models.CharField(max_length=10,primary_key=True)
+	nombre = models.CharField(max_length=70,null=True,blank=True)

@@ -5009,3 +5009,11 @@ ul.tagit.inverse li.tagit-choice .tagit-close:focus .ui-icon-close:before {
     width: 35px;
     height: 35px;
 }
+
+.rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px;
+    width: 200px;
+    height: 150px;
+}

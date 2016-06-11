@@ -9,13 +9,6 @@ class PeliculaAdmin(admin.ModelAdmin):
 	search_fields = ()
 admin.site.register(Pelicula, PeliculaAdmin)
 
-class GeneroAdmin(admin.ModelAdmin):
-	list_display = (
-		'nombre',
-		)
-
-	search_fields = ()
-admin.site.register(Genero, GeneroAdmin)
 
 class Critica_calificacionAdmin(admin.ModelAdmin):
 	list_display = (

@@ -11,6 +11,13 @@ import models
 from applications.users.models import Usuario
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
+import tmdbsimple as tmdb
+import sys
+from numpy import *
+#Cambiar por el directorio en el que se encuentre el archivo clasePelicula
+sys.path.append('./Desktop')
+#Definicion de la key
+tmdb.API_KEY = 'ce6b4a15c201b1ccc831cf754f9579cc'
 
 class Pelicula:
 
@@ -24,6 +31,28 @@ class Pelicula:
 		self.reviews = reviews
 		self.generos = generos
 
+
+def consultaPorGenero(genero):
+
+	peliculasActor = []
+
+	search = tmdb.Search()
+	response = search.genre_ids(query=genero)
+	
+	if search.total_results != 0:
+
+		known = search.results[0]
+		knownf = known['known_for']
+
+		print(knownf)
+
+		if len(knownf) != 0:
+
+			for x in knownf:
+				pelicula = crearPelicula(x)
+				peliculasActor.append(pelicula)
+
+	return peliculasActor
 
 #Templates-------------------------------------------------------------------------------------------------
 class IndexView(TemplateView):

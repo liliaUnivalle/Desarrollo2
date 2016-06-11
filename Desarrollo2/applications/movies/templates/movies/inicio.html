@@ -1,0 +1,51 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="col-md-12 ui-sortable">
+	<div class="col-md-3 ui-sortable">
+		<h2> <B>Género  </B></h2>
+	</div>
+	<div style=" border-radius: 25px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
+
+        <div  class="col-md-3 ui-sortable">
+        	<div style=" border-radius: 25px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
+                <div class="image-inner">
+                    <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
+                        <img src="{% static "assets/img/logo.png" %}" data-id="login-cover-image" alt="" />
+                    </a>
+                    <p class="image-caption">
+                        #1382 - 3D Arch
+                    </p>
+                </div>
+                <div class="image-info">
+                    <h5 class="title">Lorem ipsum dolor sit amet</h5>
+                    <div class="pull-right">
+                        <small>by</small> <a href="javascript:;">Sean Ngu</a>
+                    </div>
+                    <div class="rating">
+                        <span class="star active"></span>
+                        <span class="star active"></span>
+                        <span class="star active"></span>
+                        <span class="star"></span>
+                        <span class="star"></span>
+                    </div>
+                    <div class="desc">
+                        Nunc velit urna, aliquam at interdum sit amet, lacinia sit amet ligula. Quisque et erat eros. Aenean auctor metus in tortor placerat, non luctus justo blandit.
+                    </div>
+                 </div>
+             </div>
+        </div>
+	</div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{ block.super }}
+{% endblock %}
