@@ -8,20 +8,62 @@
 {% endblock %}
 {% block content %}
 <div class="col-md-12 ui-sortable">
+     .
+</div>
+<div class="col-md-12 ui-sortable">
 	
 	<div style=" border-radius: 25px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
-        <div  class="col-md-5 ui-sortable">
-        	<div style=" border-radius: 25px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
-                <div class="image-inner">
-                    <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
-                        <img src={{peicula.imagen}} style="width:300px;height:500px;"/>
-                    </a>
-                </div>
-             </div>
-        </div>
-        <div class="col-md-3 ui-sortable">
-		<h2> <B>{{pelicula.titulo}}  </B></h2>
-	</div>
+        
+    	<div class="col-md-5 ui-sortable" style=" border: 2px solid #FFFFFF; ">
+            <div class="image-inner">
+                <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
+                    <img src={{pelicula.imagen}} style="width:360px;height:500px;"/>
+                </a>
+            </div>
+         </div>
+
+        <div class="col-md-7 ui-sortable">
+        <font color="white">
+	        <div>		        
+				<font size=6 > <B>{{pelicula.titulo}}  </B></font>			
+			</div>
+			<div>		        
+				<small><B>Código:</B> {{pelicula.codigo}}</small>				
+			</div>
+			<div>		        
+				</p><font size=3 > <B>Descripción: </B> </font>			
+			</div>
+			<div>						        
+				<small>{{pelicula.descripcion}}</small>				
+			</div>
+			<div>		        
+				</p><font size=3 > <B>Fecha de Estreno: </B> </font> <small>{{pelicula.fechaEstreno}}</small>		
+			</div>
+			{% if pelicula.generos != None%}
+			<div>		        
+				</p><font size=3 > <B>Generos: </B> </font>		
+			</div>
+			<div>
+			{% for i in pelicula.generos.all %}					
+				<font size=2 color="white"><small>{{i.nombre}}. </small> </font>					
+			{% endfor %}
+			</div>
+			{% endif %}
+			{% if pelicula.criticas != None%}
+			<div>		        
+				</p><font size=3 > <B>Criticas: </B> </font>		
+			</div>
+				{% for i in pelicula.criticas.all %}
+					<div class="col-md-4 ui-sortable">
+						</p><font size=2 color="white"><B>{{i.critico}} : </B> </font>
+					</div>
+					<div class="col-md-8 ui-sortable">
+						</p><font size=2 color="white"><small>{{i.critica_calificacion}}  </small> </font>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</font>
+		</div>
 	</div>
 </div>
 

@@ -22,6 +22,10 @@ class Critica_calificacion(models.Model):
 		verbose_name_plural = 'Criticas_calificaciones'
 
 
+class Actor(models.Model):
+	nombre = models.CharField(max_length=10,primary_key=True)
+
+
 class Pelicula(models.Model):
 	codigo = models.CharField(max_length=30,primary_key=True)
 	titulo = models.CharField(max_length=100,null=True,blank=True)
@@ -32,6 +36,8 @@ class Pelicula(models.Model):
 	criticas = models.ManyToManyField(Critica_calificacion)
 	generos = models.ManyToManyField(Genero)
 	tipos = models.ManyToManyField(Tipo)
+	actores = models.ManyToManyField(Actor)
+
 
 	def get_criticas(self):
 		return ",".join([str(p.critico) for p in self.criticas.all()])
@@ -41,5 +47,7 @@ class Pelicula(models.Model):
 
 	def get_tipos(self):
 		return ",".join([str(p.nombre) for p in self.tipos.all()])
+
+	
 
 

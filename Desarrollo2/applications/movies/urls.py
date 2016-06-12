@@ -25,6 +25,6 @@ urlpatterns = [
     url(r'^movies/tendencias/$', Tendencias.as_view(), name='tendencias'),
     url(r'^movies/cartelera/$', Cartelera.as_view(), name='cartelera'),
     url(r'^movies/estrenos/$', Estrenos.as_view(), name='estrenos'),
-    url(r'^movies/verMas/$', VerMas.as_view(), name='verMas'),
+    url(r'^movies/verMas/(\d+)$', VerMas.as_view(), name='verMas'),
 
 ]

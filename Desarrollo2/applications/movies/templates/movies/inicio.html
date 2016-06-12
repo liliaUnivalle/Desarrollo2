@@ -25,7 +25,7 @@
                 <div class="image-info">
                     <h5 class="title"><b>{{e.titulo}}</b></h5>
                     <div class="pull-right">
-                        <a href="{% url 'movies:verMas' %}">Ver mas</a>
+                        <a href="{% url 'movies:verMas' e.codigo %}">Ver mas</a>
                     </div>
                     <div class="rating">
                         <span class="star active"></span>
