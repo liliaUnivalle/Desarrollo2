@@ -21,8 +21,8 @@ import sys
 from numpy import *
 #Cambiar por el directorio en el que se encuentre el archivo clasePelicula
 sys.path.append('./Desktop')
-from applications.movies.views import Pelicula
-from applications.users.models import Genero
+from applications.movies.models import *
+from applications.movies.views import listasPeliculas
 
 tmdb.API_KEY = 'ce6b4a15c201b1ccc831cf754f9579cc'
 
@@ -44,7 +44,7 @@ def extraerGeneroTotalesBD():
 	generosInfo = lista[u'genres']
 	for i in generosInfo:
 		genero = Genero (
-			id = i[u'id'],
+			id_genero = i[u'id'],
 			nombre = i[u'name']
 			)
 		genero.save()
@@ -56,7 +56,8 @@ class LoginPage(TemplateView):
 		try:
 			nombre = request.session['emailUser']
 			authentication = True
-			context={'authentication':authentication, 'nombre':nombre}
+			listas = listasPeliculas()
+			context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
 			return render_to_response(
 				'movies/inicio.html',
 				context,
@@ -82,9 +83,9 @@ class LoginPage(TemplateView):
 					authentication = True	
 					print "lol"	
 					nombre = usuario_p.email
-					request.session['emailUser'] = username	
-					
+					request.session['emailUser'] = username					
 					request.session['nombre'] = usuario_p.nombre	
+					#listas = listasPeliculas()
 					context={'authentication':authentication, 'nombre':nombre}
 					return render_to_response(
 					'movies/inicio.html',

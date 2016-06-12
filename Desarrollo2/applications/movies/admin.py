@@ -3,7 +3,7 @@ from .models import *
 
 class PeliculaAdmin(admin.ModelAdmin):
 	list_display = (
-		'codigo',
+		'codigo','titulo','imagen','descripcion','trailer','fechaEstreno','get_criticas','get_generos','get_tipos'
 		)
 
 	search_fields = ()
@@ -12,9 +12,27 @@ admin.site.register(Pelicula, PeliculaAdmin)
 
 class Critica_calificacionAdmin(admin.ModelAdmin):
 	list_display = (
-		'codigo','Critica_calificacion','critico'
+		'critica_calificacion','critico'
 		)
 
 	search_fields = ()
 admin.site.register(Critica_calificacion, Critica_calificacionAdmin)
+
+
+class GeneroAdmin(admin.ModelAdmin):
+	list_display = (
+		'id_genero','nombre'
+		)
+
+	search_fields = ()
+admin.site.register(Genero, GeneroAdmin)
+
+class TipoAdmin(admin.ModelAdmin):
+	list_display = (
+		'nombre',
+		)
+
+	search_fields = ()
+admin.site.register(Tipo, TipoAdmin)
+
 # Register your models here.

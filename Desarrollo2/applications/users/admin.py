@@ -36,12 +36,5 @@ class CalificaAdmin(admin.ModelAdmin):
 	search_fields = ()
 admin.site.register(Calificacion, CalificaAdmin)
 
-class GeneroAdmin(admin.ModelAdmin):
-	list_display = (
-		'id_genero',
-		)
-
-	search_fields = ()
-admin.site.register(Genero, GeneroAdmin)
 
 # Register your models here.

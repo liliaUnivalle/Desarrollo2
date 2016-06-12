@@ -9,17 +9,18 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 import models
 from applications.users.models import Usuario
+from applications.movies.models import *
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 import tmdbsimple as tmdb
 import sys
 from numpy import *
 #Cambiar por el directorio en el que se encuentre el archivo clasePelicula
-sys.path.append('./Desktop')
+
 #Definicion de la key
 tmdb.API_KEY = 'ce6b4a15c201b1ccc831cf754f9579cc'
 
-class Pelicula:
+class PeliculaAPI:
 
 	def __init__(self, id, titulo, imagen, descripcion, fecha_estreno,trailer,reviews,generos):
 		self.id = id
@@ -31,29 +32,93 @@ class Pelicula:
 		self.reviews = reviews
 		self.generos = generos
 
-
-def consultaPorGenero(genero):
-
-	peliculasActor = []
-
-	search = tmdb.Search()
-	response = search.genre_ids(query=genero)
+def crearPeliculaBD(json, tipo):
 	
-	if search.total_results != 0:
+	id = str(json['id'])	
+	imagenJson = str(json['poster_path'])
+	imagen1 = 'http://image.tmdb.org/t/p/w342' + imagenJson
+	pelicula = Pelicula(
+		codigo = str(id),
+		titulo = json['title'],
+		imagen = imagen1,
+		descripcion = json['overview'],
+		trailer = extraerTrailer(id),
+		fechaEstreno = str(json['release_date']),
+		)
+	pelicula.save()
+	extraerReviewsBD(id, pelicula)
+	extraerGeneroBD(json['genre_ids'], pelicula)
+	tipo_p = Tipo.objects.get(nombre=tipo)
+	pelicula.tipos.add(tipo_p)
+	
 
-		known = search.results[0]
-		knownf = known['known_for']
+def extraerReviewsBD(id, pelicula):
+	movie = tmdb.Movies(id)
+	criticas = movie.reviews()
+	#print(criticas)
 
-		print(knownf)
+	if criticas['total_results'] != 0:
+		#Primer campo autor, segundo contenido
+		for n in movie.results:
+			critica = Critica_calificacion(
+			 critico = n['author'],
+			 critica_calificacion = n['content'],
+			 )
 
-		if len(knownf) != 0:
+			critica.save()
+			pelicula.criticas.add(critica)
 
-			for x in knownf:
-				pelicula = crearPelicula(x)
-				peliculasActor.append(pelicula)
+def extraerGeneroBD(genres, pelicula):
+	if len(genres) != 0:
 
-	return peliculasActor
+		objGenero = tmdb.Genres()
+		lista = objGenero.list()
 
+		for n in genres:
+			for f in objGenero.genres:
+				if f['id'] == n:
+					genero = Genero.objects.get(id_genero= f['id'])
+					pelicula.generos.add(genero)
+
+
+def extraerTrailer(id):
+	movie = tmdb.Movies(id)
+	videitos = movie.videos()
+	n = movie.results
+	link = 'https://www.youtube.com/watch?v='
+	if len(n) != 0:
+		finalLink = n[0]['key']		
+		linkDefinitivo = link + finalLink
+
+		return linkDefinitivo
+
+	return link
+
+
+def consultarTendencia(x):
+	numPelis = x
+
+	movie = tmdb.Movies()
+	tendencia = movie.popular()
+	tipo_p = Tipo.objects.get(nombre="Tendencia")
+	for n in movie.results:
+
+		if numPelis < 1:
+			break
+		try:
+			pelicula_p = Pelicula.objects.get(codigo=n)
+			pelicula_p.tipos.add(tipo_p)
+		except:
+			crearPeliculaBD(n, "Tendencia")
+			numPelis = numPelis - 1
+
+
+def listasPeliculas():
+	listas = []
+	tendencias = Pelicula.objects.filter(tipos="Tendencia")
+	ten = {'nombre':"Tendencia", 'lista':tendencias}
+	listas.append(ten)	
+	return listas
 #Templates-------------------------------------------------------------------------------------------------
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -62,6 +127,21 @@ class IndexView(TemplateView):
     def dispatch(self, *args, **kwargs):
         return super(IndexView, self).dispatch(*args, **kwargs)
 
+class Tendencia(TemplateView):
+	def get(self,request,*args, **kwargs):
+		consultarTendencia(90)
+		return render_to_response(
+			'movies/tendencias.html',
+			context_instance=RequestContext(request))
+
+class Inicio(TemplateView):
+	def get(self,request,*args, **kwargs):
+		listas = listasPeliculas()
+		context={'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
 
 class Prueba(TemplateView):
 	def get(self,request,*args, **kwargs):

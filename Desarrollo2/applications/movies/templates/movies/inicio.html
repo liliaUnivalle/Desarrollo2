@@ -8,26 +8,27 @@
 {{ block.super }}
 {% endblock %}
 {% block content %}
+{% for i in listas %}
 <div class="col-md-12 ui-sortable">
 	<div class="col-md-3 ui-sortable">
-		<h2> <B>Género  </B></h2>
+		<h2> <B>{{i.nombre}}  </B></h2>
 	</div>
 	<div style=" border-radius: 25px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
-
+        {% for e in i.lista %}
         <div  class="col-md-3 ui-sortable">
         	<div style=" border-radius: 25px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
                 <div class="image-inner">
                     <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
-                        <img src="{% static "assets/img/logo.png" %}" data-id="login-cover-image" alt="" />
+                        <img src={{e.imagen}} style="width:160px;height:228px;"/>
                     </a>
                     <p class="image-caption">
                         #1382 - 3D Arch
                     </p>
                 </div>
                 <div class="image-info">
-                    <h5 class="title">Lorem ipsum dolor sit amet</h5>
+                    <h5 class="title">{{e.titulo}}</h5>
                     <div class="pull-right">
-                        <small>by</small> <a href="javascript:;">Sean Ngu</a>
+                        <a href="javascript:;">Ver mas</a>
                     </div>
                     <div class="rating">
                         <span class="star active"></span>
@@ -37,14 +38,15 @@
                         <span class="star"></span>
                     </div>
                     <div class="desc">
-                        Nunc velit urna, aliquam at interdum sit amet, lacinia sit amet ligula. Quisque et erat eros. Aenean auctor metus in tortor placerat, non luctus justo blandit.
+                        {{e.fechaEstreno}}
                     </div>
                  </div>
              </div>
         </div>
+        {% endfor %}
 	</div>
 </div>
-
+{% endfor %}
 {% endblock %}
 {% block js %}
 {{ block.super }}

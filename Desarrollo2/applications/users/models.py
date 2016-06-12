@@ -2,13 +2,11 @@ from __future__ import unicode_literals
 
 from django.db import models
 from applications.movies.models import Pelicula
+from applications.movies.models import Genero
 from datetime import datetime
 
 # Create your models here.
 
-class Genero(models.Model):
-	id_genero = models.CharField(max_length=10,primary_key=True)
-	
 class Usuario(models.Model):
 	email = models.CharField(max_length=100,primary_key=True)
 	nombre = models.CharField(max_length=100,null=True,blank=True)
