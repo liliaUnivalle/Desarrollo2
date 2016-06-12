@@ -21,14 +21,11 @@
                     <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
                         <img src={{e.imagen}} style="width:160px;height:228px;"/>
                     </a>
-                    <p class="image-caption">
-                        #1382 - 3D Arch
-                    </p>
                 </div>
                 <div class="image-info">
-                    <h5 class="title">{{e.titulo}}</h5>
+                    <h5 class="title"><b>{{e.titulo}}</b></h5>
                     <div class="pull-right">
-                        <a href="javascript:;">Ver mas</a>
+                        <a href="{% url 'movies:verMas' %}">Ver mas</a>
                     </div>
                     <div class="rating">
                         <span class="star active"></span>
@@ -38,6 +35,7 @@
                         <span class="star"></span>
                     </div>
                     <div class="desc">
+                        <small><b>Fecha de Estreno</b></small>
                         {{e.fechaEstreno}}
                     </div>
                  </div>

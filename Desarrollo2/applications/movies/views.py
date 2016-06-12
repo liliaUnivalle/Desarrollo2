@@ -110,14 +110,55 @@ def consultarTendencia(x):
 			pelicula_p.tipos.add(tipo_p)
 		except:
 			crearPeliculaBD(n, "Tendencia")
-			numPelis = numPelis - 1
+
+def consultarEnCartelera(x):
+	tipo_p = Tipo.objects.get(nombre="Cartelera")
+	movie = tmdb.Movies()
+	estreno = movie.now_playing()
+
+	for n in movie.results:
+
+		try:
+			pelicula_p = Pelicula.objects.get(codigo=n)
+			pelicula_p.tipos.add(tipo_p)
+		except:
+			crearPeliculaBD(n, "Cartelera")
+
+		numPelis = numPelis - 1
+
+def consultarEstrenos():
+	tipo_p = Tipo.objects.get(nombre="Estrenos")
+	movie = tmdb.Movies()
+	estreno = movie.upcoming()
+	
+	for n in movie.results:
+		try:
+			pelicula_p = Pelicula.objects.get(codigo=n)
+			pelicula_p.tipos.add(tipo_p)
+		except:
+			pelicula = crearPeliculaBD(n, "Estrenos")
 
 
 def listasPeliculas():
-	listas = []
-	tendencias = Pelicula.objects.filter(tipos="Tendencia")
-	ten = {'nombre':"Tendencia", 'lista':tendencias}
+	listas = []	
+	tendencias = [0]*4
+	for i in range(4):		
+		tendencias[i] = Pelicula.objects.filter(tipos="Tendencia")[i]
+	ten = {'nombre':"Tendencias", 'lista':tendencias}
 	listas.append(ten)	
+
+	cartelera = [0]*4
+	for i in range(4):		
+		cartelera[i] = Pelicula.objects.filter(tipos="Cartelera")[i]
+	ten2 = {'nombre':"En Cartelera", 'lista':cartelera}
+	listas.append(ten2)
+
+	estrenos = [0]*4
+	for i in range(4):		
+		estrenos[i] = Pelicula.objects.filter(tipos="Estrenos")[i]
+	ten3 = {'nombre':"Estrenos", 'lista':estrenos}
+	listas.append(ten3)
+
 	return listas
 #Templates-------------------------------------------------------------------------------------------------
 class IndexView(TemplateView):
@@ -127,9 +168,23 @@ class IndexView(TemplateView):
     def dispatch(self, *args, **kwargs):
         return super(IndexView, self).dispatch(*args, **kwargs)
 
-class Tendencia(TemplateView):
+class TendenciaCargar(TemplateView):
 	def get(self,request,*args, **kwargs):
 		consultarTendencia(90)
+		return render_to_response(
+			'movies/tendencias.html',
+			context_instance=RequestContext(request))
+
+class CarteleraCargar(TemplateView):
+	def get(self,request,*args, **kwargs):
+		consultarEnCartelera(90)
+		return render_to_response(
+			'movies/tendencias.html',
+			context_instance=RequestContext(request))
+
+class EstrenosCargar(TemplateView):
+	def get(self,request,*args, **kwargs):
+		consultarEstrenos()
 		return render_to_response(
 			'movies/tendencias.html',
 			context_instance=RequestContext(request))
@@ -137,11 +192,73 @@ class Tendencia(TemplateView):
 class Inicio(TemplateView):
 	def get(self,request,*args, **kwargs):
 		listas = listasPeliculas()
-		context={'listas':listas}
+		nombre = request.session['emailUser']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
 			context_instance=RequestContext(request))
+
+class Tendencias(TemplateView):
+	def get(self,request,*args, **kwargs):
+		listas = []
+		tendencias = Pelicula.objects.filter(tipos="Tendencia")
+		ten = {'nombre':"Tendencias", 'lista':tendencias}
+		listas.append(ten)
+		nombre = request.session['emailUser']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+class Cartelera(TemplateView):
+	def get(self,request,*args, **kwargs):
+		listas = []
+		cartelera = Pelicula.objects.filter(tipos="Cartelera")
+		ten = {'nombre':"En Cartelera", 'lista':cartelera}
+		listas.append(ten)
+		nombre = request.session['emailUser']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+class Estrenos(TemplateView):
+	def get(self,request,*args, **kwargs):
+		listas = []
+		estrenos = Pelicula.objects.filter(tipos="Estrenos")
+		ten = {'nombre':"Estrenos", 'lista':estrenos}
+		listas.append(ten)
+		nombre = request.session['emailUser']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+class VerMas(TemplateView):
+	def get(self,request,*args, **kwargs):
+
+		try:
+			pelicula = Pelicula.objects.get(codigo=args[0])
+		except:
+			pelicula = None
+
+		nombre = request.session['emailUser']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+
+
 
 class Prueba(TemplateView):
 	def get(self,request,*args, **kwargs):
@@ -163,8 +280,9 @@ class Prueba(TemplateView):
 
 class Index(TemplateView):
 	def get(self,request,*args, **kwargs):
-		l
-		context = {'lol':lol}
+		nombre = request.session['emailUser']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre}
 		return render_to_response(
 
 			'movies/inicio.html',context,

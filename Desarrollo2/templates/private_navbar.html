@@ -1,54 +1,43 @@
                 <!-- begin sidebar nav -->
                 <ul class="nav">
-                    <li class="nav-header">Navegación</li>
+                    <li class="nav-header">Peliculas</li>
                     <li>
                         <a href="/">
                             <i class="fa fa-home"></i>
-                            <span>Dashboard</span>
+                            <span>Inicio</span>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;">
-                            <b class="caret pull-right"></b>
+                        <a href="{% url 'movies:tendencias' %}">
                             <i class="fa fa-file-o"></i>
-                            <span>Cargar CSV</span>
-                        </a>
-                    </li>
-                    <li class="nav-header">Historico</li>
-                    <li>
-                        <a href="javascript:;">
-                            <b class="caret pull-right"></b>
-                            <i class="fa fa-file-o"></i>
-                            <span>Cargar CSV</span>
+                            <span>Tendencias</span>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:;">
-                            <b class="caret pull-right"></b>
+                        <a href="{% url 'movies:cartelera' %}">
                             <i class="fa fa-file-o"></i>
-                            <span>Cargar CSV</span>
+                            <span>En Cartelera</span>
                         </a>
                     </li>
-                    <li class="nav-header">Administración</li>
+                    <!--<li>
+                        <a href="javascript:;">
+                            <i class="fa fa-file-o"></i>
+                            <span>Recomendadas</span>
+                        </a>
+                    </li>-->
+                    <li>
+                        <a href="{% url 'movies:estrenos' %}">
+                            <i class="fa fa-file-o"></i>
+                            <span>Estrenos</span>
+                        </a>
+                    </li>
+                    <li class="nav-header">Personal</li>
                     <li class="has-sub">
                       <a href="javascript:;">
                           <b class="caret pull-right"></b>
-                          <i class="fa fa-file-o"></i>
-                          <span>Cargar CSV</span>
-                      </a>
-                      <ul class="sub-menu">
-                        <li><a href="javascript:;">
-                          <b class="caret pull-right"></b>
-                          <i class="fa fa-file-o"></i>
-                          <span>Cargar CSV</span>
-                      </a>
-                      /li>
-                        <li><a href="javascript:;">
-                          <b class="caret pull-right"></b>
-                          <i class="fa fa-file-o"></i>
-                          <span>Cargar CSV</span>
-                      </a></li>
-                      </ul>
+                          <i class="fa fa-user"></i>
+                          <span>Perfil</span>
+                      </a>                    
                     </li>
                     <li class="has-sub">
                       <a href="javascript:;">
@@ -62,8 +51,5 @@
                       </ul>
                     </li>
 
-                    <!-- begin sidebar minify button -->
-                    <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
-                    <!-- end sidebar minify button -->
                 </ul>
                 <!-- end sidebar nav -->

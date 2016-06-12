@@ -85,8 +85,8 @@ class LoginPage(TemplateView):
 					nombre = usuario_p.email
 					request.session['emailUser'] = username					
 					request.session['nombre'] = usuario_p.nombre	
-					#listas = listasPeliculas()
-					context={'authentication':authentication, 'nombre':nombre}
+					listas = listasPeliculas()
+					context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
 					return render_to_response(
 					'movies/inicio.html',
 					context,
@@ -161,10 +161,21 @@ class RegisterPage(TemplateView):
 				context_instance=RequestContext(request))
 
 class Index(TemplateView):
-	def get(self, request, *args, **kwargs):
-		return render_to_response(
-			'authentication/index.html',
-			context_instance=RequestContext(request))
+	def get(self,request,*args,**kwargs):
+		try:
+			nombre = request.session['emailUser']
+			authentication = True
+			listas = listasPeliculas()
+			context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+			return render_to_response(
+				'movies/inicio.html',
+				context,
+				context_instance = RequestContext(request)
+				)		
+		except:
+			return render_to_response(
+				'authentication/index.html', 
+					context_instance=RequestContext(request))
 
 	def post(self,request,*args,**kwargs):
 		return render_to_response(
