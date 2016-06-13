@@ -13,6 +13,7 @@ from .views import Tendencias
 from .views import Cartelera
 from .views import Estrenos 
 from .views import VerMas
+from .views import Busqueda
 
 
 urlpatterns = [
@@ -26,5 +27,6 @@ urlpatterns = [
     url(r'^movies/cartelera/$', Cartelera.as_view(), name='cartelera'),
     url(r'^movies/estrenos/$', Estrenos.as_view(), name='estrenos'),
     url(r'^movies/verMas/(\d+)$', VerMas.as_view(), name='verMas'),
+    url(r'^movies/busqueda/$', Busqueda.as_view(), name='busqueda'),
 
 ]

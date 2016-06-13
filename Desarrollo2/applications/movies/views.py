@@ -50,6 +50,8 @@ def crearPeliculaBD(json, tipo):
 	extraerGeneroBD(json['genre_ids'], pelicula)
 	tipo_p = Tipo.objects.get(nombre=tipo)
 	pelicula.tipos.add(tipo_p)
+
+	return pelicula
 	
 
 def extraerReviewsBD(id, pelicula):
@@ -160,6 +162,32 @@ def listasPeliculas():
 	listas.append(ten3)
 
 	return listas
+
+def consultaPorTitulo(titulo):
+
+	search = tmdb.Search()
+	response = search.movie(query=titulo)
+	peliculasTitulo= []
+
+	if search.total_results != 0:
+
+		for n in search.results:
+			try:
+				pelicula_p = Pelicula.objects.get(codigo=n)
+				peliculasTitulo.append(pelicula_p)
+			except:
+				peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
+
+	return peliculasTitulo
+
+def calificacion(codigo, email, valor):
+	calificacion = Calificacion(
+		codigo = codigo,
+		email = email,
+		valor = valor,
+		)
+	calificacion.save()
+
 #Templates-------------------------------------------------------------------------------------------------
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -258,6 +286,27 @@ class VerMas(TemplateView):
 			context,
 			context_instance=RequestContext(request))
 
+class Busqueda(TemplateView):
+	def get(self,request,*args, **kwargs):
+		actor = request.POST['actor']
+		titulo = request.POST['titulo']
+		if(titulo != ""):
+			nombre = request.session['emailUser']
+			authentication = True
+			listas = consultaPorTitulo(titulo) 
+			context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+			return render_to_response(
+				'movies/inicio.html',
+				context,
+				context_instance=RequestContext(request))
+		else:
+			nombre = request.session['emailUser']
+			authentication = True
+			context={'authentication':authentication, 'nombre':nombre, }
+			return render_to_response(
+				'movies/inicio.html',
+				context,
+				context_instance=RequestContext(request))
 
 
 class Prueba(TemplateView):

@@ -48,6 +48,7 @@ class Pelicula(models.Model):
 	def get_tipos(self):
 		return ",".join([str(p.nombre) for p in self.tipos.all()])
 
-	
+	def get_actores(self):
+		return ",".join([str(p.nombre) for p in self.actores.all()])
 
 
