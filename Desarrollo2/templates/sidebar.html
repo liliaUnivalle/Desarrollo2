@@ -1,9 +1,7 @@
         <!-- begin #sidebar -->
         <div id="sidebar" class="sidebar">
             <!-- begin sidebar scrollbar -->
-            <div data-scrollbar="true" data-height="100%">
-                {% if user.is_authenticated %}
-                <!-- begin sidebar user -->
+            <div data-scrollbar="true" data-height="100%">                <!-- begin sidebar user -->
                 <ul class="nav">
                     <li class="nav-profile">
                         <div class="image">
@@ -16,13 +14,9 @@
                     </li>
                 </ul>
                 <!-- end sidebar user -->
-                {% endif %}
-                <!-- begin sidebar nav -->
-                {% if user.is_authenticated %}
+                
                 {% include 'private_navbar.html' %}
-                {% else %}
-                {% include 'public_navbar.html' %}
-                {% endif %}
+                
                 <!-- end sidebar nav -->
             </div>
             <!-- end sidebar scrollbar -->
