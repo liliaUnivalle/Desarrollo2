@@ -1,3 +1,4 @@
+    {% load staticfiles %}
         <!-- begin #sidebar -->
         <div id="sidebar" class="sidebar">
             <!-- begin sidebar scrollbar -->
@@ -5,11 +6,13 @@
                 <ul class="nav">
                     <li class="nav-profile">
                         <div class="image">
-                            <a href="javascript:;"><img src="assets/img/user-13.jpg" alt="" /></a>
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="{% static "assets/img/user-13.png" %}" data-id="login-cover-image" alt="" />
+                            </a>
                         </div>
                         <div class="info">
-                            Sean Ngu
-                            <small>Front end developer</small>
+                            {{nombre}}
+                            <small>Usuario</small>
                         </div>
                     </li>
                 </ul>

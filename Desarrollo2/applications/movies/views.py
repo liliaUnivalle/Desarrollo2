@@ -37,6 +37,8 @@ def crearPeliculaBD(json, tipo):
 	id = str(json['id'])	
 	imagenJson = str(json['poster_path'])
 	imagen1 = 'http://image.tmdb.org/t/p/w342' + imagenJson
+
+	
 	pelicula = Pelicula(
 		codigo = str(id),
 		titulo = json['title'],
@@ -62,12 +64,16 @@ def extraerReviewsBD(id, pelicula):
 	if criticas['total_results'] != 0:
 		#Primer campo autor, segundo contenido
 		for n in movie.results:
-			critica = Critica_calificacion(
-			 critico = n['author'],
-			 critica_calificacion = n['content'],
-			 )
+			try:
+				critica = Critica_calificacion.objects.get(critico = n['author'], critica_calificacion = n['content'])
 
-			critica.save()
+			except:
+				critica = Critica_calificacion(
+				 critico = n['author'],
+				 critica_calificacion = n['content'],
+				 )
+
+				critica.save()
 			pelicula.criticas.add(critica)
 
 def extraerGeneroBD(genres, pelicula):
@@ -111,7 +117,8 @@ def consultarTendencia(x):
 			pelicula_p = Pelicula.objects.get(codigo=n)
 			pelicula_p.tipos.add(tipo_p)
 		except:
-			crearPeliculaBD(n, "Tendencia")
+			if n['media_type'] == 'movie':
+				crearPeliculaBD(n, "Tendencia")
 
 def consultarEnCartelera(x):
 	tipo_p = Tipo.objects.get(nombre="Cartelera")
@@ -124,7 +131,8 @@ def consultarEnCartelera(x):
 			pelicula_p = Pelicula.objects.get(codigo=n)
 			pelicula_p.tipos.add(tipo_p)
 		except:
-			crearPeliculaBD(n, "Cartelera")
+			if n['media_type'] == 'movie':
+				crearPeliculaBD(n, "Cartelera")
 
 		numPelis = numPelis - 1
 
@@ -138,7 +146,8 @@ def consultarEstrenos():
 			pelicula_p = Pelicula.objects.get(codigo=n)
 			pelicula_p.tipos.add(tipo_p)
 		except:
-			pelicula = crearPeliculaBD(n, "Estrenos")
+			if n['media_type'] == 'movie':
+				pelicula = crearPeliculaBD(n, "Estrenos")
 
 
 def listasPeliculas():
@@ -176,9 +185,37 @@ def consultaPorTitulo(titulo):
 				pelicula_p = Pelicula.objects.get(codigo=n)
 				peliculasTitulo.append(pelicula_p)
 			except:
-				peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
+				if n['media_type'] == 'movie':
+					peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
 
 	return peliculasTitulo
+
+
+def consultaPorActor(actor):
+
+	peliculasActor = []
+
+	search = tmdb.Search()
+	response = search.person(query=actor)
+	
+	if search.total_results != 0:
+
+		known = search.results[0]
+		knownf = known['known_for']
+
+		print(knownf)
+
+		if len(knownf) != 0:
+
+			for x in knownf:
+				try:
+					pelicula = Pelicula.objects.get(codigo=x)
+					peliculasActor.append(pelicula)
+				except:
+					if x['media_type'] == 'movie':
+						peliculasActor.append(crearPeliculaBD(x, "Regular"))
+
+	return peliculasActor
 
 def calificacion(codigo, email, valor):
 	calificacion = Calificacion(
@@ -287,13 +324,26 @@ class VerMas(TemplateView):
 			context_instance=RequestContext(request))
 
 class Busqueda(TemplateView):
-	def get(self,request,*args, **kwargs):
-		actor = request.POST['actor']
-		titulo = request.POST['titulo']
-		if(titulo != ""):
+	def post(self,request,*args, **kwargs):
+		busqueda = request.POST['busqueda']
+		tipo = request.POST['tipo']
+		if(busqueda != ""):
 			nombre = request.session['emailUser']
 			authentication = True
-			listas = consultaPorTitulo(titulo) 
+			listas = []
+			print tipo
+			if tipo == "titulo":
+				lista = consultaPorTitulo(busqueda)
+				nombre_q = "Resultados busqueda por titulo de: " + busqueda				
+				busqueda = {'nombre':nombre_q, 'lista':lista}
+				listas.append(busqueda)
+			elif tipo == "actor":
+				lista = consultaPorActor(busqueda)
+				nombre_q = "Resultados busqueda por actor de: " + busqueda
+				
+				busqueda = {'nombre':nombre_q, 'lista':lista}
+				listas.append(busqueda)
+
 			context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
 			return render_to_response(
 				'movies/inicio.html',

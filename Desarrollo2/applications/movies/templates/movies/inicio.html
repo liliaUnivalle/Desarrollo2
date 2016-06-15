@@ -10,7 +10,7 @@
 {% block content %}
 {% for i in listas %}
 <div class="col-md-12 ui-sortable">
-	<div class="col-md-3 ui-sortable">
+	<div class="col-md-12 ui-sortable">
 		<h2> <B>{{i.nombre}}  </B></h2>
 	</div>
 	<div style=" border-radius: 25px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
@@ -18,7 +18,7 @@
         <div  class="col-md-3 ui-sortable">
         	<div style=" border-radius: 25px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
                 <div class="image-inner">
-                    <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
+                    <a href="{% url 'movies:verMas' e.codigo %}" data-lightbox="gallery-group-1">
                         <img src={{e.imagen}} style="width:160px;height:228px;"/>
                     </a>
                 </div>
