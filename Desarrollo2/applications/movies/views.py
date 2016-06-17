@@ -341,7 +341,7 @@ class ListarVistas(TemplateView):
 			pelicula = Pelicula.objects.get(codigo=i)
 			peliculas_vistas.append(pelicula)
 
-		ten = {'nombre':"Peliculas por Ver", 'lista':peliculas_vistas}
+		ten = {'nombre':"Peliculas Vistas", 'lista':peliculas_vistas}
 		listas.append(ten)
 		
 		authentication = True
