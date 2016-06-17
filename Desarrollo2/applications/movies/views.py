@@ -181,11 +181,11 @@ def consultaPorTitulo(titulo):
 	if search.total_results != 0:
 
 		for n in search.results:
+			print n
 			try:
 				pelicula_p = Pelicula.objects.get(codigo=n)
 				peliculasTitulo.append(pelicula_p)
 			except:
-				if n['media_type'] == 'movie':
 					peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
 
 	return peliculasTitulo
@@ -307,17 +307,188 @@ class Estrenos(TemplateView):
 			context,
 			context_instance=RequestContext(request))
 
+class ListarPorVer(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		listas = []
+		peliculas_por_ver =[]
+		porver = usuario.get_porver()
+		codigos = porver.split(",")
+		for i in codigos:
+			pelicula = Pelicula.objects.get(codigo=i)
+			peliculas_por_ver.append(pelicula)
+
+		ten = {'nombre':"Peliculas por Ver", 'lista':peliculas_por_ver}
+		listas.append(ten)
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+class ListarVistas(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		listas = []
+		peliculas_vistas =[]
+		vistas = usuario.get_vistas()
+		codigos = vistas.split(",")
+		for i in codigos:
+			pelicula = Pelicula.objects.get(codigo=i)
+			peliculas_vistas.append(pelicula)
+
+		ten = {'nombre':"Peliculas por Ver", 'lista':peliculas_vistas}
+		listas.append(ten)
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
 class VerMas(TemplateView):
 	def get(self,request,*args, **kwargs):
 
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		ver = True
+		vista = True
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
+
+			porver = usuario.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
+
+			vistas1 = usuario.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False
+
 		except:
 			pelicula = None
 
-		nombre = request.session['emailUser']
+		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula}
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+
+	def post(self,request,*args, **kwargs):
+		valor = request.POST['estrellas']
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		ver = True
+		vista = True
+		try:
+			pelicula = Pelicula.objects.get(codigo=args[0])
+
+			cali = Calificacio(
+				codigo = args[0],
+				email = nombre,
+				valor_Calificacion = valor,
+				)
+			cali.save()
+			
+			porver = usuario.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
+
+			vistas1 = usuario.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False
+
+		except:
+			pelicula = None
+
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+
+class AgregarPorVer(TemplateView):
+	def get(self,request,*args, **kwargs):
+
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		ver = False
+		vista = True
+		try:
+			pelicula = Pelicula.objects.get(codigo=args[0])
+
+			vistas1 = usuario.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False
+			try:
+				
+				usuario.lista_peliculas_porver.add(pelicula)
+
+			except:
+				ver=False
+
+		except:
+			pelicula = None
+
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+
+class AgregarVistas(TemplateView):
+	def get(self,request,*args, **kwargs):
+
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)		
+		ver = True
+		vista = False
+		try:
+			pelicula = Pelicula.objects.get(codigo=args[0])
+			
+			porver = usuario.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
+
+			try:
+				
+				usuario.lista_peliculas_vistas.add(pelicula)
+				if not ver:
+					usuario.lista_peliculas_porver.remove(pelicula)
+					ver = True
+					
+
+			except:
+				vista=False
+
+		except:
+			pelicula = None
+
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,

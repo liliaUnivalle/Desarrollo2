@@ -14,6 +14,10 @@ from .views import Cartelera
 from .views import Estrenos 
 from .views import VerMas
 from .views import Busqueda
+from .views import AgregarPorVer
+from .views import AgregarVistas
+from .views import ListarPorVer
+from .views import ListarVistas
 
 
 urlpatterns = [
@@ -28,5 +32,8 @@ urlpatterns = [
     url(r'^movies/estrenos/$', Estrenos.as_view(), name='estrenos'),
     url(r'^movies/verMas/(\d+)$', VerMas.as_view(), name='verMas'),
     url(r'^movies/busqueda/$', Busqueda.as_view(), name='busqueda'),
-
+    url(r'^movies/ver/(\d+)$', AgregarPorVer.as_view(), name='ver'),
+    url(r'^movies/vistas/(\d+)$', AgregarVistas.as_view(), name='vistas'),
+    url(r'^movies/listarVistas/$', ListarPorVer.as_view(), name='listarPorVer'),
+    url(r'^movies/listarPorVer/$', ListarVistas.as_view(), name='listarVistas'),
 ]

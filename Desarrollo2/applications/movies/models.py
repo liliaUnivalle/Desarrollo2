@@ -51,4 +51,10 @@ class Pelicula(models.Model):
 	def get_actores(self):
 		return ",".join([str(p.nombre) for p in self.actores.all()])
 
+	def basic_info_to_json(self):
+		return json.dumps(
+			{
+			'codigo':self.codigo
+			}
+		)
 

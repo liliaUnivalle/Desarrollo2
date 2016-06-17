@@ -17,3 +17,15 @@ class IndexView(TemplateView):
 		return render_to_response(
 			'users/login.html',
 			context_instance=RequestContext(request))
+
+
+class Perfil(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		nombre2 = request.session['nombre']
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'nombre2':nombre2}
+		return render_to_response(
+			'users/perfil.html',
+			context,
+			context_instance=RequestContext(request))

@@ -7,16 +7,20 @@
 {% block css %}
 {{ block.super }}
 {% endblock %}
+{% block extrahead %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js" />
+{% endblock %}
 {% block content %}
 {% for i in listas %}
 <div class="col-md-12 ui-sortable">
 	<div class="col-md-12 ui-sortable">
 		<h2> <B>{{i.nombre}}  </B></h2>
 	</div>
-	<div style=" border-radius: 25px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
+	<div style=" border-radius: 15px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
         {% for e in i.lista %}
-        <div  class="col-md-3 ui-sortable">
-        	<div style=" border-radius: 25px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
+
+        <div  class="col-md-3 ui-sortable" style="height:400px;">
+        	<div style=" border-radius: 15px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
                 <div class="image-inner">
                     <a href="{% url 'movies:verMas' e.codigo %}" data-lightbox="gallery-group-1">
                         <img src={{e.imagen}} style="width:160px;height:228px;"/>
@@ -38,33 +42,32 @@
                         <small><b>Fecha de Estreno</b></small>
                         {{e.fechaEstreno}}
                     </div>
-                     <div class="col-md-2 ui-sortable">
+                    <div class="col-md-2 ui-sortable">
                     </p><font size=1  color="white"> <B> </B></font>
-                    </div>
-                    <div class="col-md-7 ui-sortable">
-                        <form action="">
-                        <div class="clasificacion">                   
-                                <input id="radio1" name="estrellas" value="5" type="radio"><!--
-                            --><label for="radio1"><font size=2>★</font></label><!--
-                            --><input id="radio2" name="estrellas" value="4" type="radio"><!--
-                            --><label for="radio2"><font size=2>★</font></label><!--
-                            --><input id="radio3" name="estrellas" value="3" type="radio"><!--
-                            --><label for="radio3"><font size=2>★</font></label><!--
-                            --><input id="radio4" name="estrellas" value="2" type="radio"><!--
-                            --><label for="radio4"><font size=2>★</font></label><!--
-                            --><input id="radio5" name="estrellas" value="1" type="radio"><!--
-                            --><label for="radio5"><font size=2>★</font></label>
-                          </div>
-                        </form>
-                    </div>
+                    </div>                    
                  </div>
              </div>
         </div>
         {% endfor %}
-	</div>
+	</div>  
 </div>
 {% endfor %}
 {% endblock %}
 {% block js %}
 {{ block.super }}
+<script language="javascript" src="{% static "assets/plugins/js/jquery-1.2.6.min.js" %}"></script>
+<script language="javascript">
+$(document).ready( function() {
+    for (var i = 0; i < listas.length; i++) 
+    {    
+        var lista = i.lista
+        for (var e = 0; e < lista.length; i++) 
+        {
+            $("#about-btn-{{e.codigo}}").click( function(event) {
+                alert("You clicked the button using JQuery!");
+            });
+        }
+    }
+});
+</script>
 {% endblock %}

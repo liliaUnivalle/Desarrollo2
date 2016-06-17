@@ -1,0 +1,103 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="col-md-12 ui-sortable">
+	<div style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF; "class="col-md-12 ui-sortable">
+		<div class="col-md-6 ui-sortable" style="border-bottom: #0B173B 10px dotted;">
+			<font size=6  color="#000000"> <B> Bienenid@ {{nombre2}}</B></font>
+		</div>
+		<div class="col-md-12 ui-sortable" >
+			</p>
+			<div class="col-md-7 ui-sortable" style="  margin-top: 30px;">
+
+				<div class="col-md-12 control-label ui-sortable"  >
+					<font size=5  color="#000000"> <B>Datos personales</B></font>
+				</div>
+				<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+					<table>
+						<tr>
+							<td>
+								<font size=3  color="#000000"> <B>Nombre:&nbsp </B></font>
+							</td>
+							<td>
+								<font size=3  color="#000000"> {{nombre2}}&nbsp&nbsp</font>
+							</td>
+							<td>
+								<img src="{% static "assets/img/pencil.png" %}" style="width:20px;height:20px;" />
+							</td>							
+						</tr>
+						<tr>
+							<td>
+								<font size=3  color="#000000"> <B>Correo:&nbsp&nbsp</B></font>
+							</td>
+							<td>
+								<font size=3  color="#000000">{{nombre}}&nbsp&nbsp</font>
+							</td>
+							<td>
+								<img src="{% static "assets/img/pencil.png" %}" style="width:20px;height:20px;" />
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+			</div>
+		</div>
+		<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#0B173B;  margin-top: 30px;">
+			<div class="col-md-6 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
+				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
+					<font size=5  color="#000000 "> <B><p ALIGN=center > Nueva lista</p></B></font>
+				</div>
+				<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+					<div class="form-group">
+	                    <label class="col-md-3 control-label ui-sortable"><font size=3  color="#000000"> <B>Nombre </B></font></label>
+	                    <div class="col-md-9 ui-sortable">
+	                        <input class="form-control" placeholder="Default input" type="text">
+	                    </div>
+	                </div>
+	                <div class="form-group" style="  margin-top: 10px;">
+                        <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+                            <center><button style="  border: 2px solid #151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Crear lista</button></center>
+                        </div>
+                    </div>
+				</div>
+			</div>
+			<div class="col-md-6 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
+				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
+					<font size=5  color="#000000 "> <B><p ALIGN=center > Ver listas Personales</p></B></font>
+				</div>
+				<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+					<div class="form-group">
+	                    <label class="col-md-3 control-label ui-sortable"><font size=3  color="#000000"> <B>Lista </B></font></label>
+	                    <div class="col-md-9 ui-sortable">
+                            <select class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+	                </div>
+	                <div class="form-group" style="  margin-top: 10px;">
+                        <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+                            <center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Ver lista</button></center>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{ block.super }}
+{% endblock %}

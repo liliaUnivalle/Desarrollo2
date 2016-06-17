@@ -36,20 +36,16 @@
                       <a href="javascript:;">
                           <b class="caret pull-right"></b>
                           <i class="fa fa-user"></i>
-                          <span>Perfil</span>
-                      </a>                    
+                          <span>Usuario</span>
+                      </a> 
+                          <ul class="sub-menu">
+                            <li><a href="{% url 'users:perfil' %}">Perfil</a></li>
+                            <li><a href="{% url 'movies:listarVistas' %}">Peliculas Vistas</a></li>
+                            <li><a href="{% url 'movies:listarPorVer' %}">Peliculas por Ver</a></li>
+                          </ul>                 
                     </li>
-                    <li class="has-sub">
-                      <a href="javascript:;">
-                          <b class="caret pull-right"></b>
-                          <i class="fa fa-user"></i>
-                          <span>Usuarios</span>
-                      </a>
-                      <ul class="sub-menu">
-                        <li><a href="">Nuevo</a></li>
-                        <li><a href="">Listar/Editar</a></li>
-                      </ul>
-                    </li>
+                                              
+                   
 
                 </ul>
                 <!-- end sidebar nav -->
