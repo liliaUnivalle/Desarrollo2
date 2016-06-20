@@ -12,13 +12,21 @@
                         </div>
                         <div class="info">
                             {{nombre}}
-                            <small>Usuario</small>
+                            {% if user.tipo == "admin" %}
+                                <small>Administrador</small>
+                            {% else %}
+                                <small>Usuario</small>
+                            {% endif%}
+                            
                         </div>
                     </li>
                 </ul>
                 <!-- end sidebar user -->
-                
-                {% include 'private_navbar.html' %}
+                {% if user.tipo == "admin" %}
+                    {% include 'public_navbar.html' %}
+                {% else %}
+                    {% include 'private_navbar.html' %}
+                {% endif%}
                 
                 <!-- end sidebar nav -->
             </div>

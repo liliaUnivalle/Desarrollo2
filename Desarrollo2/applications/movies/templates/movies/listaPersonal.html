@@ -19,7 +19,7 @@
 	<div style=" border-radius: 15px; border: 2px solid #151515; padding: 20px;  background:#0B173B; "class="col-md-12 ui-sortable">
         {% for e in i.lista %}
 
-        <div  class="col-md-3 ui-sortable" style="height:380px;">
+        <div  class="col-md-3 ui-sortable" style="height:400px;">
         	<div style=" border-radius: 15px; border: 2px solid #0B2161; padding: 20px;  background:#FFFFFF; ">
                 <div class="image-inner">
                     <a href="{% url 'movies:verMas' e.codigo %}" data-lightbox="gallery-group-1">
@@ -31,16 +31,17 @@
                     <div class="pull-right">
                         <a href="{% url 'movies:verMas' e.codigo %}">Ver mas</a>
                     </div>
-                    
                     <div class="desc">
                         <small><b>Fecha de Estreno</b></small>
                         {{e.fechaEstreno}}
-                    </div>
-                    <div class="col-md-2 ui-sortable">
-                    </p><font size=1  color="white"> <B> </B></font>
                     </div>                    
-                 </div>
-             </div>
+                    <div class="col-md-12 ui-sortable">  
+                        <div class="form-horizontal form-bordered" style="  margin-top: 10px;"> 
+                            <center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="form-control">Eliminar de la lista</button></center>
+                        </div>
+                    </div>            
+                </div>
+            </div>
         </div>
         {% endfor %}
 	</div>  

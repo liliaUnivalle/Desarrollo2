@@ -22,18 +22,27 @@
                     <img src={{pelicula.imagen}} style="width:360px;height:500px;"/>
                 </a>
             </div>
-            <div class="col-md-12 ui-sortable">
-            </p><font size=4  > <B>Tiene una calificación de: </B></font>
+             
+            <form action="{% url 'users:agregarAListaPersonal' pelicula.codigo %}" method="POST" class="margin-bottom-0"> {% csrf_token %}
+            <div class="col-md-12 ui-sortable">  
+            	<label ><font size=4  color="black"> <B>Agregar a una lista</B></font></label>
             </div>
-
-            <div class="col-md-7 ui-sortable">          	
-	
-				<div id="star1" class="rating">&nbsp;</div>
-				<div id="star2" class="rating">&nbsp;</div>
-				<div id="star3" class="rating">&nbsp;</div>
-				<div id="star4" class="rating">&nbsp;</div>
-				<div id="star5" class="rating">&nbsp;</div>            	
-            </div>       	
+            <div class="col-md-12 ui-sortable">  
+				<div class="form-horizontal form-bordered" style="  margin-top: 10px;">
+	                <div class="col-md-5 ui-sortable">                	                            
+	                    <select name="lista" class="form-control">
+	                    	<option>Seleccionar lista</option>
+	                        {% for i in listasPersonalizadas %}
+	                            <option>{{i.nombre}}</option>
+	                        {% endfor %}
+	                    </select>	                        
+	                </div>	           
+	                <div class="col-md-5 ui-sortable" >
+	                    <center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="form-control">Agregar</button></center>
+	                </div>
+	            </div>
+	        </div>
+	        </form>   	
             {% if ver %}
 	            <div class="col-md-6 ui-sortable">
 	            	<a href="{% url 'movies:ver' pelicula.codigo %}" id="ver"><font size=4 > <B>+La quiero ver </B></font></a>

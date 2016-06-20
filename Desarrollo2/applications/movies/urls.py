@@ -35,5 +35,5 @@ urlpatterns = [
     url(r'^movies/ver/(\d+)$', AgregarPorVer.as_view(), name='ver'),
     url(r'^movies/vistas/(\d+)$', AgregarVistas.as_view(), name='vistas'),
     url(r'^movies/listarVistas/$', ListarPorVer.as_view(), name='listarPorVer'),
-    url(r'^movies/listarPorVer/$', ListarVistas.as_view(), name='listarVistas'),
+    url(r'^movies/listarPorVer/$', ListarVistas.as_view(), name='listarVistas'), 
 ]

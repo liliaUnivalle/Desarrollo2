@@ -33,7 +33,7 @@ class Lista_personal(models.Model):
 	contenido = models.ManyToManyField(Pelicula)
 
 	def get_contenido(self):
-		return ",".join([str(p.nombre) for p in self.contenido.all()])
+		return ",".join([str(p.codigo) for p in self.contenido.all()])
 
 	class Meta:
 		unique_together = ('nombre', 'email')

@@ -55,11 +55,18 @@ class LoginPage(TemplateView):
 	def get(self,request,*args,**kwargs):
 		try:
 			nombre = request.session['emailUser']
+			user = Usuario.objects.get(email=nombre)
 			authentication = True
 			listas = listasPeliculas()
-			context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+			context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
+			if user.tipo == "admin":
+				url = 'users/admin.html'
+			elif user.tipo == "cliente":
+				url = 'movies/inicio.html'
+			else:
+				url = 'movies/movie.html'
 			return render_to_response(
-				'movies/inicio.html',
+				url,
 				context,
 				context_instance = RequestContext(request)
 				)
@@ -86,9 +93,16 @@ class LoginPage(TemplateView):
 					request.session['emailUser'] = username					
 					request.session['nombre'] = usuario_p.nombre	
 					listas = listasPeliculas()
-					context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+					user = Usuario.objects.get(email=nombre)
+					if user.tipo == "admin":
+						url = 'users/admin.html'
+					elif user.tipo == "cliente":
+						url = 'movies/inicio.html'
+					else:
+						url = 'movies/movie.html'
+					context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 					return render_to_response(
-					'movies/inicio.html',
+					url,
 					context,
 					context_instance = RequestContext(request)
 					)
@@ -166,7 +180,8 @@ class Index(TemplateView):
 			nombre = request.session['emailUser']
 			authentication = True
 			listas = listasPeliculas()
-			context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+			user = Usuario.objects.get(email=nombre)
+			context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 			return render_to_response(
 				'movies/inicio.html',
 				context,

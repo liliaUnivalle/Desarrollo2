@@ -9,12 +9,14 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 import models
 from applications.users.models import Usuario
+from applications.users.models import Lista_personal
 from applications.movies.models import *
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 import tmdbsimple as tmdb
 import sys
 from numpy import *
+from django.contrib import messages
 #Cambiar por el directorio en el que se encuentre el archivo clasePelicula
 
 #Definicion de la key
@@ -259,7 +261,8 @@ class Inicio(TemplateView):
 		listas = listasPeliculas()
 		nombre = request.session['emailUser']
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		user = Usuario.objects.get(email=nombre)
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -272,8 +275,9 @@ class Tendencias(TemplateView):
 		ten = {'nombre':"Tendencias", 'lista':tendencias}
 		listas.append(ten)
 		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -286,8 +290,9 @@ class Cartelera(TemplateView):
 		ten = {'nombre':"En Cartelera", 'lista':cartelera}
 		listas.append(ten)
 		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -300,8 +305,9 @@ class Estrenos(TemplateView):
 		ten = {'nombre':"Estrenos", 'lista':estrenos}
 		listas.append(ten)
 		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -310,10 +316,11 @@ class Estrenos(TemplateView):
 class ListarPorVer(TemplateView):
 	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
-		usuario = Usuario.objects.get(email=nombre)
+
+		user = Usuario.objects.get(email=nombre)
 		listas = []
 		peliculas_por_ver =[]
-		porver = usuario.get_porver()
+		porver = user.get_porver()
 		codigos = porver.split(",")
 		for i in codigos:
 			pelicula = Pelicula.objects.get(codigo=i)
@@ -323,7 +330,7 @@ class ListarPorVer(TemplateView):
 		listas.append(ten)
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -332,10 +339,10 @@ class ListarPorVer(TemplateView):
 class ListarVistas(TemplateView):
 	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
-		usuario = Usuario.objects.get(email=nombre)
+		user = Usuario.objects.get(email=nombre)
 		listas = []
 		peliculas_vistas =[]
-		vistas = usuario.get_vistas()
+		vistas = user.get_vistas()
 		codigos = vistas.split(",")
 		for i in codigos:
 			pelicula = Pelicula.objects.get(codigo=i)
@@ -345,7 +352,7 @@ class ListarVistas(TemplateView):
 		listas.append(ten)
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas}
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -355,58 +362,53 @@ class VerMas(TemplateView):
 	def get(self,request,*args, **kwargs):
 
 		nombre = request.session['emailUser']
-		usuario = Usuario.objects.get(email=nombre)
+		user = Usuario.objects.get(email=nombre)
 		ver = True
 		vista = True
+		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 
-			porver = usuario.get_porver()
+			porver = user.get_porver()
 			tipos2 = porver.split(",")
 			for i in tipos2:
 				if i == pelicula.codigo:
 					ver = False
 
-			vistas1 = usuario.get_vistas()
+			vistas1 = user.get_vistas()
 			tipos1 = vistas1.split(",")
 			for i in tipos1:
 				if i == pelicula.codigo:
 					vista = False
-
+		
 		except:
 			pelicula = None
 
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
 			context_instance=RequestContext(request))
 
 	def post(self,request,*args, **kwargs):
-		valor = request.POST['estrellas']
 		nombre = request.session['emailUser']
-		usuario = Usuario.objects.get(email=nombre)
+		user = Usuario.objects.get(email=nombre)
 		ver = True
 		vista = True
+		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 
-			cali = Calificacio(
-				codigo = args[0],
-				email = nombre,
-				valor_Calificacion = valor,
-				)
-			cali.save()
 			
-			porver = usuario.get_porver()
+			porver = user.get_porver()
 			tipos2 = porver.split(",")
 			for i in tipos2:
 				if i == pelicula.codigo:
 					ver = False
 
-			vistas1 = usuario.get_vistas()
+			vistas1 = user.get_vistas()
 			tipos1 = vistas1.split(",")
 			for i in tipos1:
 				if i == pelicula.codigo:
@@ -417,7 +419,7 @@ class VerMas(TemplateView):
 
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
@@ -440,7 +442,12 @@ class AgregarPorVer(TemplateView):
 					vista = False
 			try:
 				
-				usuario.lista_peliculas_porver.add(pelicula)
+				try:
+					usuario.lista_peliculas_porver.get(codigo=pelicula.codigo)
+					messages.info(request,"la pelicula ya esta en esta lista")
+				except:
+					usuario.lista_peliculas_porver.add(pelicula)
+					messages.info(request,"la pelicula fue agregada con exito")
 
 			except:
 				ver=False
@@ -450,7 +457,7 @@ class AgregarPorVer(TemplateView):
 
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
@@ -474,10 +481,15 @@ class AgregarVistas(TemplateView):
 
 			try:
 				
-				usuario.lista_peliculas_vistas.add(pelicula)
-				if not ver:
-					usuario.lista_peliculas_porver.remove(pelicula)
-					ver = True
+				try:
+					usuario.lista_peliculas_vistas.get(codigo=pelicula.codigo)
+					messages.info(request,"la pelicula ya esta en esta lista")
+				except:
+					usuario.lista_peliculas_vistas.add(pelicula)
+					messages.info(request,"la pelicula fue agregada con exito")
+					if not ver:
+						usuario.lista_peliculas_porver.remove(pelicula)
+						ver = True
 					
 
 			except:
@@ -488,7 +500,7 @@ class AgregarVistas(TemplateView):
 
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista}
+		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
@@ -500,6 +512,7 @@ class Busqueda(TemplateView):
 		tipo = request.POST['tipo']
 		if(busqueda != ""):
 			nombre = request.session['emailUser']
+			user = Usuario.objects.get(email=nombre)
 			authentication = True
 			listas = []
 			print tipo
@@ -523,7 +536,7 @@ class Busqueda(TemplateView):
 		else:
 			nombre = request.session['emailUser']
 			authentication = True
-			context={'authentication':authentication, 'nombre':nombre, }
+			context={'authentication':authentication, 'nombre':nombre, 'user':user}
 			return render_to_response(
 				'movies/inicio.html',
 				context,
@@ -551,9 +564,11 @@ class Prueba(TemplateView):
 class Index(TemplateView):
 	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre}
+		context={'authentication':authentication, 'nombre':nombre, 'user':user}
 		return render_to_response(
 
 			'movies/inicio.html',context,
 			context_instance=RequestContext(request))
+
