@@ -198,3 +198,16 @@ class EliminarDeListaPersonal(TemplateView):
 			'movies/listaPersonal.html',
 			context,
 			context_instance=RequestContext(request))
+
+class Admin(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		nombre2 = request.session['nombre']
+		authentication = True
+		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
+		context={'authentication':authentication, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
+		return render_to_response(
+			'users/admin.html',
+			context,
+			context_instance=RequestContext(request))
