@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="col-md-12 ui-sortable">
+	<div style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF; "class="col-md-12 ui-sortable">
+		<div class="col-md-12 ui-sortable" style="border-bottom: #0B173B 10px dotted; ">
+			<font size=6  color="#000000"> <B> Bienenid@ {{user.nombre}}</B></font>
+		</div>
+		<div class="col-md-12 ui-sortable" style="border-bottom: #0B173B 10px dotted; margin-top: 10px;" >
+			<font size=4  color="#000000"> <B> Crear un rol Auditor </B></font>
+			<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#0B173B;  margin-top: 10px;">
+				<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
+				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
+					<font size=5  color="#000000 "> <B><p ALIGN=center > Nuevo Auditor</p></B></font>
+				</div>
+				<form action="{% url 'users:adminAuditor' %}" method="POST" class="margin-bottom-0"> {% csrf_token %}	
+					<div class="col-md-6 ui-sortable" >												
+						<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+							<div class="form-group">
+			                    <label class="col-md-4 control-label ui-sortable"><font size=3  color="#000000"> <B>Nombre </B></font></label>
+			                    <div class="col-md-8 ui-sortable">
+			                        <input name="nombre" class="form-control" placeholder="Default input" type="text">
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-4 control-label ui-sortable"><font size=3  color="#000000"> <B>Contraseña </B></font></label>
+			                    <div class="col-md-8 ui-sortable">
+			                        <input name="contrasena1" class="form-control" placeholder="Default input" type="text">
+			                    </div>
+			                </div>
+						</div>						
+					</div>
+					<div class="col-md-6 ui-sortable" >
+						<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+							<div class="form-group">
+			                    <label class="col-md-4 control-label ui-sortable"><font size=3  color="#000000"> <B>Correo </B></font></label>
+			                    <div class="col-md-8 ui-sortable">
+			                        <input name="email" class="form-control" placeholder="Default input" type="text">
+			                    </div>
+			                </div>
+			                <div class="form-group">
+			                    <label class="col-md-4 control-label ui-sortable"><font size=3  color="#000000"> <B>Confirmar contraseña </B></font></label>
+			                    <div class="col-md-8 ui-sortable">
+			                        <input name="contrasena2" class="form-control" placeholder="Default input" type="text">
+			                    </div>
+			                </div>			                
+						</div>		
+					</div>
+					<div class="col-md-12 ui-sortable" >
+						<div class="form-group" style="  margin-top: 10px;">
+	                        <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+	                            <center><button style="  border: 2px solid #151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Crear Auditor</button></center>
+	                        </div>
+	                    </div>
+					</div>
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script>
+    $(document).ready(function() {
+        App.init();
+        LoginV2.init();
+    });
+</script>
+{% endblock %}

@@ -39,7 +39,7 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     
-                    {% if user.tipo == "cliente" %}      
+                    {% if user.tipo == "Cliente" %}      
                     <li>
 
                         <form action="{% url 'movies:busqueda' %}" method="POST" class="navbar-form full-width"> {% csrf_token %}

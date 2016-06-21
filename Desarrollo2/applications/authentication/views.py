@@ -61,7 +61,7 @@ class LoginPage(TemplateView):
 			context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 			if user.tipo == "admin":
 				url = 'users/admin.html'
-			elif user.tipo == "cliente":
+			elif user.tipo == "Cliente":
 				url = 'movies/inicio.html'
 			else:
 				url = 'movies/movie.html'
@@ -96,7 +96,7 @@ class LoginPage(TemplateView):
 					user = Usuario.objects.get(email=nombre)
 					if user.tipo == "admin":
 						url = 'users/admin.html'
-					elif user.tipo == "cliente":
+					elif user.tipo == "Cliente":
 						url = 'movies/inicio.html'
 					else:
 						url = 'movies/movie.html'
@@ -181,9 +181,15 @@ class Index(TemplateView):
 			authentication = True
 			listas = listasPeliculas()
 			user = Usuario.objects.get(email=nombre)
+			if user.tipo == "admin":
+				url = 'users/admin.html'
+			elif user.tipo == "Cliente":
+				url = 'movies/inicio.html'
+			else:
+				url = 'movies/movie.html'
 			context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 			return render_to_response(
-				'movies/inicio.html',
+				url,
 				context,
 				context_instance = RequestContext(request)
 				)		

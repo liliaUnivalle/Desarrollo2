@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.shortcuts import render, render_to_response
@@ -11,6 +12,8 @@ from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 from .models import *
 from django.contrib import messages
+from applications.authentication.forms import GetRegister
+from django.contrib import messages
 
 # Create your views here.
 
@@ -22,7 +25,7 @@ class IndexView(TemplateView):
 			context_instance=RequestContext(request))
 
 
-class Perfil(TemplateView):
+class Cliente(TemplateView):
 	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
 		user = Usuario.objects.get(email=nombre)
@@ -31,7 +34,7 @@ class Perfil(TemplateView):
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		context={'authentication':authentication, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
 		return render_to_response(
-			'users/perfil.html',
+			'users/cliente.html',
 			context,
 			context_instance=RequestContext(request))
 
@@ -58,7 +61,7 @@ class CrearNuevaLista(TemplateView):
 		listasPersonalizadas =  Lista_personal.objects.all()
 		context={'authentication':authentication, 'nombre':nombre, 'user':user, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas }
 		return render_to_response(
-			'users/perfil.html',
+			'users/cliente.html',
 			context,
 			context_instance=RequestContext(request))
 
@@ -205,9 +208,58 @@ class Admin(TemplateView):
 		user = Usuario.objects.get(email=nombre)
 		nombre2 = request.session['nombre']
 		authentication = True
-		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
-		context={'authentication':authentication, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
+		context={'authentication':authentication, 'nombre':nombre, 'nombre2':nombre2, 'user':user}
 		return render_to_response(
 			'users/admin.html',
 			context,
 			context_instance=RequestContext(request))
+
+class AdminAuditor(TemplateView):
+	def get(self,request,*args, **kwargs):
+		form = GetRegister()
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre,'form':form, 'user':user}
+		return render_to_response(
+			'users/adminAuditor.html',
+			context,
+			context_instance=RequestContext(request))
+
+	def post(self,request,*args,**kwargs):
+		form = GetRegister(request.POST)
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		authentication = True	
+		if form.is_valid():
+			cd = form.cleaned_data 
+			email = cd['email']
+			name = cd['nombre']
+			contrasena1 = cd['contrasena1']
+			contrasena2 = cd['contrasena2']			
+			
+			if(contrasena2 == contrasena1):
+				try:
+					usuario_p = Usuario.objects.get(email=email)
+					message = "El correo ya se a registrado anteriormente."
+					
+				except:
+					usuario = Usuario(
+						email= email,
+						nombre= name,
+						contrasena= contrasena1,
+						tipo = "Auditor",
+						)
+					
+					usuario.save()
+					message = "El auditor fue creado con exito. "
+			else:	
+				message = "Las contraseñas no coinciden."
+		else:
+			message = "Debe llenar todos los campos"
+		
+		context={'authentication':authentication, 'form':form,'nombre':nombre, 'user':user}
+		return render_to_response(
+		'users/adminAuditor.html',
+		context,
+		context_instance=RequestContext(request))

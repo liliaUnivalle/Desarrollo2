@@ -23,9 +23,9 @@
                 </ul>
                 <!-- end sidebar user -->
                 {% if user.tipo == "admin" %}
-                    {% include 'public_navbar.html' %}
-                {% else %}
-                    {% include 'private_navbar.html' %}
+                    {% include 'admin_navbar.html' %}
+                {% elif user.tipo == "Cliente" %}
+                    {% include 'cliente_navbar.html' %}
                 {% endif%}
                 
                 <!-- end sidebar nav -->
