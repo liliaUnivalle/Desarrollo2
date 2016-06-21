@@ -64,6 +64,11 @@ class Calificacion(models.Model):
 		unique_together = ('codigo', 'email')
 		verbose_name = 'Calificacion'
 		verbose_name_plural = 'Calificaciones'
+		
+	def get_pelicula(self):
+		return self.codigo.codigo
+	def get_email(self):
+		return self.email.email
 
 class Consulta():
 

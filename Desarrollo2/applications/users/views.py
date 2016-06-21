@@ -66,10 +66,37 @@ class CrearNuevaLista(TemplateView):
 			context_instance=RequestContext(request))
 
 class ListarListaPersonal(TemplateView):
-	def post(self,request,*args, **kwargs):
+	def get(self,request,*args, **kwargs):		
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		lista =request.session['lista'] 	
+		lista_personal = Lista_personal.objects.get(nombre=lista, email=nombre)	 	
+		listas = []
+		vistas = lista_personal. get_contenido()
+		codigos = vistas.split(",")
+		listaPersonal =[]
+		for i in codigos:
+			try:
+				pelicula = Pelicula.objects.get(codigo=i)
+				listaPersonal.append(pelicula)
+			except:
+				print "Hay error"
+
+		ten = {'nombre':"Lista Personal: "+lista, 'lista':listaPersonal}
+		listas.append(ten)
+		
+		authentication = True
+		context={'authentication':authentication, 'user':usuario, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/listaPersonal.html',
+			context,
+			context_instance=RequestContext(request))
+
+	def post(self,request,*args, **kwargs):		
 		nombre = request.session['emailUser']
 		usuario = Usuario.objects.get(email=nombre)
 		lista = request.POST['lista']
+		request.session['lista'] = lista	
 		lista_personal = Lista_personal.objects.get(nombre=lista, email=nombre)	 	
 		listas = []
 		vistas = lista_personal. get_contenido()
@@ -168,18 +195,19 @@ class AgregarAListaPersonal(TemplateView):
 			context_instance=RequestContext(request))
 
 class EliminarDeListaPersonal(TemplateView):
-	def post(self,request,*args, **kwargs):
+	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
 		usuario = Usuario.objects.get(email=nombre)
-		lista =  args[0]
-		codigo = args[1]
+		lista = request.session['lista']
+		codigo = args[0]
 		lista_personal = Lista_personal.objects.get(nombre=lista, email=nombre)	
-		pelicula = Pelicula.objects.get(codigo=i)
+		listaEliminar = lista_personal.contenido
+		pelicula = Pelicula.objects.get(codigo=codigo)
 		try:
-			listaPersonal.remove(pelicula) 
-			messages.info(request,"hubo error")
-		except:
+			listaEliminar.remove(pelicula) 
 			messages.info(request,"Se elimino con exito")
+		except:
+			messages.info(request,"La pelicula ya no se encuentra")
 
 		listas = []
 		vistas = lista_personal. get_contenido()
@@ -201,6 +229,7 @@ class EliminarDeListaPersonal(TemplateView):
 			'movies/listaPersonal.html',
 			context,
 			context_instance=RequestContext(request))
+	
 
 class Admin(TemplateView):
 	def get(self,request,*args, **kwargs):
@@ -258,8 +287,56 @@ class AdminAuditor(TemplateView):
 		else:
 			message = "Debe llenar todos los campos"
 		
+		messages.info(request,message)
 		context={'authentication':authentication, 'form':form,'nombre':nombre, 'user':user}
 		return render_to_response(
 		'users/adminAuditor.html',
 		context,
 		context_instance=RequestContext(request))
+
+class ListarCalificaciones(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		if user.tipo == "Cliente":
+			usuario = nombre
+
+		calificacion = Calificacion.objects.filter(email=usuario)
+
+		authentication = True
+		context={'authentication':authentication, 'usuario':usuario, 'calificacion':calificacion,'nombre':nombre, 'user':user}
+		return render_to_response(
+			'users/calificaciones.html',
+			context,
+			context_instance=RequestContext(request))
+		
+	def post(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		if user.tipo == "Cliente":
+			usuario = nombre
+		if user.tipo == "admin":
+			usuario = request.POST['usuario']
+
+		calificacion = Calificacion.objects.filter(email=usuario)
+
+		authentication = True
+		context={'authentication':authentication, 'usuario':usuario, 'calificacion':calificacion,'nombre':nombre, 'user':user}
+		return render_to_response(
+			'users/calificaciones.html',
+			context,
+			context_instance=RequestContext(request))
+
+class ListasAdmin(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+
+		users = Usuario.objects.filter(tipo="Cliente")
+
+		authentication = True
+		context={'authentication':authentication, 'users':users, 'nombre':nombre, 'user':user}
+		return render_to_response(
+			'users/listas.html',
+			context,
+			context_instance=RequestContext(request))

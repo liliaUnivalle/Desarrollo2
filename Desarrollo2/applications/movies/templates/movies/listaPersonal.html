@@ -35,10 +35,12 @@
                         <small><b>Fecha de Estreno</b></small>
                         {{e.fechaEstreno}}
                     </div>                    
-                    <div class="col-md-12 ui-sortable">  
+                    <div class="col-md-12 ui-sortable"> 
+                        <form action="{% url 'users:eliminarDeListaPersonal' e.codigo %}" method="get" class="margin-bottom-0"> {% csrf_token %} 
                         <div class="form-horizontal form-bordered" style="  margin-top: 10px;"> 
                             <center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="form-control">Eliminar de la lista</button></center>
                         </div>
+                        </form>
                     </div>            
                 </div>
             </div>

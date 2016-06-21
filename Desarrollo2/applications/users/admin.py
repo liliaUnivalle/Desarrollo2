@@ -30,7 +30,7 @@ admin.site.register(Coleccion, ColeccionlAdmin)
 
 class CalificaAdmin(admin.ModelAdmin):
 	list_display = (
-		'codigo','email','valor_Calificacion'
+		'get_pelicula','get_email','valor_Calificacion'
 		)
 
 	search_fields = ()
