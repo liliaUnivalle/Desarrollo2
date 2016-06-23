@@ -13,6 +13,9 @@ from .views import AdminAuditor
 from .views import EliminarDeListaPersonal
 from .views import ListarCalificaciones
 from .views import ListasAdmin
+from .views import Recomendaciones
+from .views import ListarVistasPorGenero
+from .views import ListarTodasLasPeliculas
 
 urlpatterns = [
 	url(r'^users/cliente/$', Cliente.as_view(), name='perfil'),
@@ -24,4 +27,8 @@ urlpatterns = [
     url(r'^users/eliminarDeListaPersonal/(\d+)$', EliminarDeListaPersonal.as_view(), name='eliminarDeListaPersonal'),
     url(r'^users/calificaciones/$', ListarCalificaciones.as_view(), name='calificaciones'),
     url(r'^users/listasAdmin/$', ListasAdmin.as_view(), name='listasAdmin'),  
+    url(r'^users/recomendaciones/$', Recomendaciones.as_view(), name='recomendaciones'), 
+    url(r'^users/listarVistasPorGenero/$', ListarVistasPorGenero.as_view(), name='listarVistasPorGenero'), 
+    url(r'^users/listarTodasLasPelicula/$', ListarTodasLasPeliculas.as_view(), name='listarTodasLasPelicula'),
+    
 ]

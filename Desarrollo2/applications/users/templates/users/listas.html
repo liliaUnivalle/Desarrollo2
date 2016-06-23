@@ -12,7 +12,7 @@
 		<div class="col-md-12 ui-sortable" style="border-bottom: #0B173B 10px dotted; ">
 			<font size=6  color="#000000"> <B> Bienenid@ {{user.nombre}}</B></font>
 		</div>
-		<div class="col-md-12 ui-sortable" style="border-bottom: #0B173B 10px dotted; margin-top: 10px;" >
+		<div class="col-md-6 ui-sortable" style="border-bottom: #0B173B 10px dotted; margin-top: 10px;" >
 			<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#0B173B;  margin-top: 10px;">
 				<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
 				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
@@ -35,6 +35,98 @@
 					<div class="form-group" style="  margin-top: 10px;">
                         <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
                             <center><button style="  border: 2px solid #151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Listar calificaciones</button></center>
+                        </div>
+                    </div>	
+				</form>
+				</div>
+			</div>			
+		</div>
+		<div class="col-md-6 ui-sortable" style="border-bottom: #0B173B 10px dotted; margin-top: 10px;" >
+			<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#0B173B;  margin-top: 10px;">
+				<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
+				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
+					<font size=5  color="#000000 "> <B><p ALIGN=center > Listar lista Por Ver por usuario</p></B></font>
+				</div>
+				<form action="{% url 'movies:listarPorVer' %}" method="post" class="margin-bottom-0"> {% csrf_token %}												
+					<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+						<div class="form-group">
+		                    <label class="col-md-4 control-label ui-sortable"><font size=3  color="#000000"> <B>Usuario</B></font></label>
+		                    <div class="col-md-8 ui-sortable">
+                                <select name="usuario" >
+                                	<option>Seleccionar Usuario</option>
+                                	{% for i in users %}
+                                    	<option>{{i.email}}</option>
+                                	{% endfor %}
+                                </select>
+		                    </div>
+		                </div>
+					</div>	
+					<div class="form-group" style="  margin-top: 10px;">
+                        <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+                            <center><button style="  border: 2px solid #151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Listar calificaciones</button></center>
+                        </div>
+                    </div>	
+				</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 ui-sortable" style="border-bottom: #0B173B 10px dotted; margin-top: 10px;" >
+			<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#0B173B;  margin-top: 10px;">
+				<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
+				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
+					<font size=5  color="#000000 "> <B><p ALIGN=center > Cantidad de peliculas vistas por genero por usuario</p></B></font>
+				</div>
+				<form action="{% url 'users:listarVistasPorGenero' %}" method="post" class="margin-bottom-0"> {% csrf_token %}												
+					<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+						<div class="form-group">
+		                    <label class="col-md-3 control-label ui-sortable"><font size=3  color="#000000"> <B>Usuario</B></font></label>
+		                    <div class="col-md-8 ui-sortable">
+                                <select name="usuario" >
+                                	<option>Seleccionar Usuario</option>
+                                	{% for i in users %}
+                                    	<option>{{i.email}}</option>
+                                	{% endfor %}
+                                </select>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+		                <div class="form-group">
+		                    <label class="col-md-3 control-label ui-sortable"><font size=3  color="#000000"> <B>Genero</B></font></label>
+		                    <div class="col-md-8 ui-sortable">
+                                <select name="genero" >
+                                	<option>Seleccionar genero</option>
+                                	{% for i in generos %}
+                                    	<option>{{i.nombre}}</option>
+                                	{% endfor %}
+                                </select>
+		                    </div>
+		                </div>
+					</div>	
+					<div class="form-group" style="  margin-top: 10px;">
+                        <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+                            <center><button style="  border: 2px solid #151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Listar </button></center>
+                        </div>
+                    </div>	
+				</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6 ui-sortable" style="border-bottom: #0B173B 10px dotted; margin-top: 10px;" >
+			<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#0B173B;  margin-top: 10px;">
+				<div class="col-md-12 ui-sortable" style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF;  border-bottom: #0B173B 5px solid;"class="col-md-12 ui-sortable">	
+				<div class="col-md-12 ui-sortable" style=" border-bottom: #0B173B 3px solid;">
+					<font size=5  color="#000000 "> <B><p ALIGN=center > Todas las peliculas</p></B></font>
+				</div>
+				<form action="{% url 'users:listarTodasLasPelicula' %}" method="post" class="margin-bottom-0"> {% csrf_token %}												
+					<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+						<div class="form-group">
+		                    <label class="col-md-12 control-label ui-sortable"><font size=3  color="#000000"> <B>Listar todas las peliculas en la base de datos</B></font></label>
+		                </div>
+		            </div>
+					<div class="form-group" style="  margin-top: 10px;">
+                        <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+                            <center><button style="  border: 2px solid #151515; background:#2E2E2E;" type="submit" class="btn btn-sm btn-success">Listar </button></center>
                         </div>
                     </div>	
 				</form>

@@ -3,3 +3,6 @@ argparse==1.2.1
 django-rest-framework-nested==0.0.1
 djangorestframework==3.3.2
 wsgiref==0.1.2
+numpy
+tmdbsimple
+python-social-auth

@@ -192,6 +192,27 @@ def consultaPorTitulo(titulo):
 
 	return peliculasTitulo
 
+def consultaPorGenero(genero, z):
+
+	peliculasGenero = []
+	search = tmdb.Search()
+	response = search.movie(query=genero)
+	peliculasTitulo= []
+
+	if search.total_results != 0:
+
+		for n in search.results:
+			if z < 1:
+				break
+			try:
+				pelicula_p = Pelicula.objects.get(codigo=n)
+				peliculasTitulo.append(pelicula_p)
+			except:
+					peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
+			z = z-1				
+
+	return peliculasGenero
+
 
 def consultaPorActor(actor):
 
@@ -318,6 +339,28 @@ class ListarPorVer(TemplateView):
 		nombre = request.session['emailUser']
 
 		user = Usuario.objects.get(email=nombre)
+		listas = []
+		peliculas_por_ver =[]
+		porver = user.get_porver()
+		codigos = porver.split(",")
+		for i in codigos:
+			pelicula = Pelicula.objects.get(codigo=i)
+			peliculas_por_ver.append(pelicula)
+
+		ten = {'nombre':"Peliculas por Ver", 'lista':peliculas_por_ver}
+		listas.append(ten)
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+	def post(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		nombreUsuario = request.POST['usuario']
+		user = Usuario.objects.get(email=nombreUsuario)
 		listas = []
 		peliculas_por_ver =[]
 		porver = user.get_porver()

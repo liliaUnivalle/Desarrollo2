@@ -11,11 +11,58 @@ from django.shortcuts import render
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 from .models import *
+from applications.movies.views import consultaPorGenero
 from django.contrib import messages
 from applications.authentication.forms import GetRegister
 from django.contrib import messages
 
 # Create your views here.
+def generarRecomendaciones(nombre, user):
+	peliculasVistas = user.lista_peliculas_vistas
+	listas = []
+	vistas = user.get_vistas()
+	codigos = vistas.split(",")
+
+	matriz = []
+	generos = Genero.objects.all()
+	for i in range(len(generos)):
+	    matriz.append([])
+	    matriz[i].append(0)
+	    matriz[i].append(generos[i].id_genero)
+	    
+
+	for i in codigos:
+		try:
+			print i
+			pelicula = Pelicula.objects.get(codigo=i)			
+			for e in matriz:
+				gens = pelicula.get_generos()				
+				gens2 = gens.split(",")
+				for s in gens2:
+					if e[1] == s:
+						e[0] = e[0] +1												
+			
+		except:
+			print "hay error"
+
+
+	gensU = user.get_generos()	
+	gens3 = gensU.split(",")
+	for e in matriz:
+		for s in gens3:
+			if e[1] == s:
+				e[0] = e[0] +3
+
+	matriz.sort(reverse=True)
+	peliculas = []
+	for i in range(3):
+		lista = consultaPorGenero(matriz[i][1], 10)
+		print "gen ---------------------------------"
+		for i in lista:
+			print i.titulo
+
+
+#----------------Templates------------------------------------------------------------------
 
 class IndexView(TemplateView):
 	def get(self,request,*args, **kwargs):
@@ -32,7 +79,8 @@ class Cliente(TemplateView):
 		nombre2 = request.session['nombre']
 		authentication = True
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
-		context={'authentication':authentication, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
+		generos = Genero.objects.all()
+		context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
 		return render_to_response(
 			'users/cliente.html',
 			context,
@@ -333,10 +381,81 @@ class ListasAdmin(TemplateView):
 		user = Usuario.objects.get(email=nombre)
 
 		users = Usuario.objects.filter(tipo="Cliente")
+		generos = Genero.objects.all()
 
 		authentication = True
-		context={'authentication':authentication, 'users':users, 'nombre':nombre, 'user':user}
+		context={'authentication':authentication,'generos':generos, 'users':users, 'nombre':nombre, 'user':user}
 		return render_to_response(
 			'users/listas.html',
+			context,
+			context_instance=RequestContext(request))
+
+class Recomendaciones(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		generarRecomendaciones(nombre, user)
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'user':user}
+		return render_to_response(
+			'movies/movie.html',
+			context,
+			context_instance=RequestContext(request))
+
+class ListarVistasPorGenero(TemplateView):
+	def post(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		users = Usuario.objects.filter(tipo="Cliente")
+		authentication = True
+		generos = Genero.objects.all()
+		if user.tipo == "admin":
+			usuario = request.POST['usuario']
+			url = 'users/listas.html'
+			context={'authentication':authentication,'generos':generos, 'users':users, 'nombre':nombre, 'user':user}
+		elif user.tipo == "Cliente":
+			usuario = nombre
+			url = 'users/cliente.html'
+			listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
+			context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
+
+		genero = request.POST['genero']
+		usuario2 = Usuario.objects.get(email=usuario)
+		vistas = usuario2.get_vistas()
+		vistas2 = vistas.split(',')
+		lista=[]
+		for i in vistas2:
+			pelicula = Pelicula.objects.get(codigo=i)
+			generos = pelicula.generos.all()
+			for e in generos:
+				if e.nombre == genero:
+					lista.append(pelicula)
+		
+		cantidad = len (lista)
+
+		
+		message = "El usuario "+usuario+" ha visto "+ str(cantidad) + " peliculas del genero "+genero
+		messages.info(request,message)
+
+		
+		return render_to_response(
+			url,
+			context,
+			context_instance=RequestContext(request))
+
+class ListarTodasLasPeliculas(TemplateView):
+
+	def post(self,request,*args, **kwargs):		
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)	
+		peliculas = Pelicula.objects.all()	
+		listas = []
+		ten = {'nombre':"Todas las peliculas ", 'lista':peliculas}
+		listas.append(ten)
+		
+		authentication = True
+		context={'authentication':authentication, 'user':usuario, 'nombre':nombre, 'listas':listas}
+		return render_to_response(
+			'movies/inicio.html',
 			context,
 			context_instance=RequestContext(request))
