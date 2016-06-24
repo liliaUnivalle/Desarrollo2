@@ -14,8 +14,10 @@
                             {{nombre}}
                             {% if user.tipo == "admin" %}
                                 <small>Administrador</small>
-                            {% else %}
+                            {% elif user.tipo == "Cliente" %}
                                 <small>Usuario</small>
+                            {% elif user.tipo == "Auditor" %}
+                                <small>Auditor</small>
                             {% endif%}
                             
                         </div>
@@ -25,6 +27,8 @@
                 {% if user.tipo == "admin" %}
                     {% include 'admin_navbar.html' %}
                 {% elif user.tipo == "Cliente" %}
+                    {% include 'cliente_navbar.html' %}
+                {% elif user.tipo == "Auditor" %}
                     {% include 'cliente_navbar.html' %}
                 {% endif%}
                 

@@ -63,7 +63,7 @@ class LoginPage(TemplateView):
 				url = 'users/admin.html'
 			elif user.tipo == "Cliente":
 				url = 'movies/inicio.html'
-			else:
+			elif user.tipo == "Auditor":
 				url = 'movies/movie.html'
 			return render_to_response(
 				url,
