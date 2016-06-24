@@ -483,6 +483,7 @@ class Recomendaciones(TemplateView):
 	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
 		user = Usuario.objects.get(email=nombre)
+		messages.info(request,"Estamos buscando las mejores peliculas para ti, esperanos por favor")
 		lista = generarRecomendaciones(nombre, user)
 		listas = []
 		authentication = True

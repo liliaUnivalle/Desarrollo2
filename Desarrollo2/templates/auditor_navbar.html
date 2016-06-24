@@ -7,16 +7,17 @@
                             <span>Inicio</span>
                         </a>
                     </li>
+                    <li class="nav-header">Reportes</li>
                     <li>
-                        <a href="{% url 'movies:tendencias' %}">
+                        <a href="{% url 'users:vistasUltimoMes' %}">
                             <i class="fa fa-file-o"></i>
-                            <span>Tendencias</span>
+                            <span>Peliculas mas vistas Ultimo Mes</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'movies:cartelera' %}">
+                        <a href="{% url 'users:generosMasVistosUltimoMes' %}">
                             <i class="fa fa-file-o"></i>
-                            <span>En Cartelera</span>
+                            <span>Generos mas vistos ultimo mes</span>
                         </a>
                     </li>
                     <!--<li>

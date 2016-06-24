@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 import models
 from applications.users.models import Usuario
 from applications.users.models import Lista_personal
+from applications.users.models import FechaPeliculaVista
 from applications.movies.models import *
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
@@ -17,6 +18,7 @@ import tmdbsimple as tmdb
 import sys
 from numpy import *
 from django.contrib import messages
+from datetime import datetime
 #Cambiar por el directorio en el que se encuentre el archivo clasePelicula
 
 #Definicion de la key
@@ -188,6 +190,7 @@ def consultaPorTitulo(titulo):
 				pelicula_p = Pelicula.objects.get(codigo=n)
 				peliculasTitulo.append(pelicula_p)
 			except:
+				if n['media_type'] == 'movie':
 					peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
 
 	return peliculasTitulo
@@ -195,20 +198,20 @@ def consultaPorTitulo(titulo):
 def consultaPorGenero(genero, z):
 
 	peliculasGenero = []
-	search = tmdb.Search()
-	response = search.movie(query=genero)
-	peliculasTitulo= []
+	generos= tmdb.Genres(genero)
+	print generos
+	response = generos.movies()
 
-	if search.total_results != 0:
+	if generos.total_results != 0:
 
-		for n in search.results:
+		for n in generos.results:
 			if z < 1:
 				break
 			try:
 				pelicula_p = Pelicula.objects.get(codigo=n)
-				peliculasTitulo.append(pelicula_p)
+				peliculasGenero.append(pelicula_p)
 			except:
-					peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
+				peliculasGenero.append(crearPeliculaBD(n, "Regular"))
 			z = z-1				
 
 	return peliculasGenero
@@ -343,9 +346,13 @@ class ListarPorVer(TemplateView):
 		peliculas_por_ver =[]
 		porver = user.get_porver()
 		codigos = porver.split(",")
-		for i in codigos:
-			pelicula = Pelicula.objects.get(codigo=i)
-			peliculas_por_ver.append(pelicula)
+		try:
+			for i in codigos:
+				pelicula = Pelicula.objects.get(codigo=i)
+				peliculas_por_ver.append(pelicula)
+
+		except:
+				messages.info(request,"No hay peliculas por ver")
 
 		ten = {'nombre':"Peliculas por Ver", 'lista':peliculas_por_ver}
 		listas.append(ten)
@@ -365,9 +372,13 @@ class ListarPorVer(TemplateView):
 		peliculas_por_ver =[]
 		porver = user.get_porver()
 		codigos = porver.split(",")
-		for i in codigos:
-			pelicula = Pelicula.objects.get(codigo=i)
-			peliculas_por_ver.append(pelicula)
+		try:
+			for i in codigos:
+				pelicula = Pelicula.objects.get(codigo=i)
+				peliculas_por_ver.append(pelicula)
+			
+		except:
+				messages.info(request,"No hay peliculas por ver")
 
 		ten = {'nombre':"Peliculas por Ver", 'lista':peliculas_por_ver}
 		listas.append(ten)
@@ -387,19 +398,23 @@ class ListarVistas(TemplateView):
 		peliculas_vistas =[]
 		vistas = user.get_vistas()
 		codigos = vistas.split(",")
-		for i in codigos:
-			pelicula = Pelicula.objects.get(codigo=i)
-			peliculas_vistas.append(pelicula)
+		try:
+			for i in codigos:			
+				pelicula = Pelicula.objects.get(codigo=i)
+				peliculas_vistas.append(pelicula)					
+			
+		except:
+			messages.info(request,"No hay peliculas vistas")
 
 		ten = {'nombre':"Peliculas Vistas", 'lista':peliculas_vistas}
 		listas.append(ten)
-		
 		authentication = True
 		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
-			context_instance=RequestContext(request))
+			context_instance=RequestContext(request))		
+					
 
 class VerMas(TemplateView):
 	def get(self,request,*args, **kwargs):
@@ -512,7 +527,7 @@ class AgregarVistas(TemplateView):
 		nombre = request.session['emailUser']
 		usuario = Usuario.objects.get(email=nombre)		
 		ver = True
-		vista = False
+		vista = False		
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 			
@@ -529,7 +544,17 @@ class AgregarVistas(TemplateView):
 					messages.info(request,"la pelicula ya esta en esta lista")
 				except:
 					usuario.lista_peliculas_vistas.add(pelicula)
-					messages.info(request,"la pelicula fue agregada con exito")
+					messages.info(request,"la pelicula fue agregada con exito")					
+					fecha = datetime.now()
+					print fecha					
+					fechaVista = FechaPeliculaVista(
+						codigo = pelicula,
+						email = usuario,
+						fecha = fecha,
+						)
+					fechaVista.save()
+
+
 					if not ver:
 						usuario.lista_peliculas_porver.remove(pelicula)
 						ver = True

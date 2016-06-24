@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="col-md-12 ui-sortable">
+	<div style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF; "class="col-md-12 ui-sortable">
+		<div class="col-md-12 ui-sortable" >
+			<font size=6  color="#000000"> <B> Lista de peliculas vistas en el ultimo mes</B></font>
+		</div>
+		<div class="col-md-12 ui-sortable" >
+			<div class="panel-body">
+	            <table class="table table-striped" style="border: black 2px solid;">
+	                <thead>
+	                    <tr>
+	                    	<th>Veces vista</th>
+	                        <th>Codigo Pelicula</th>
+	                        <th>Nombre Pelicula</th>	                        
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                	{% for i in matriz %}
+	                    <tr>
+	                    	<td>{{i.cantidad}}</td>
+	                        <td>{{i.pelicula.codigo}}</td>
+	                        <td>{{i.pelicula.titulo}}</td>	                        
+	                    </tr>
+	                    {% endfor %}
+	                    
+	                </tbody>
+	            </table>
+        	</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script>
+    $(document).ready(function() {
+        App.init();
+        LoginV2.init();
+    });
+</script>
+{% endblock %}

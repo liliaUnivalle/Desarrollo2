@@ -3,19 +3,7 @@
 from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib import admin
-from .views import IndexView
-from .views import Cliente
-from .views import CrearNuevaLista
-from .views import ListarListaPersonal
-from .views import AgregarAListaPersonal
-from .views import Admin
-from .views import AdminAuditor
-from .views import EliminarDeListaPersonal
-from .views import ListarCalificaciones
-from .views import ListasAdmin
-from .views import Recomendaciones
-from .views import ListarVistasPorGenero
-from .views import ListarTodasLasPeliculas
+from .views import *
 
 urlpatterns = [
 	url(r'^users/cliente/$', Cliente.as_view(), name='perfil'),
@@ -30,5 +18,7 @@ urlpatterns = [
     url(r'^users/recomendaciones/$', Recomendaciones.as_view(), name='recomendaciones'), 
     url(r'^users/listarVistasPorGenero/$', ListarVistasPorGenero.as_view(), name='listarVistasPorGenero'), 
     url(r'^users/listarTodasLasPelicula/$', ListarTodasLasPeliculas.as_view(), name='listarTodasLasPelicula'),
+    url(r'^users/vistasUltimoMes/$', MasVistasUltimoMes.as_view(), name='vistasUltimoMes'),
+    url(r'^users/generosMasVistosUltimoMes/$', GenerosMasVistosUltimoMes.as_view(), name='generosMasVistosUltimoMes'),
     
 ]

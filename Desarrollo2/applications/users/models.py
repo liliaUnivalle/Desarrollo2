@@ -70,6 +70,21 @@ class Calificacion(models.Model):
 	def get_email(self):
 		return self.email.email
 
+class FechaPeliculaVista(models.Model):
+	codigo = models.ForeignKey(Pelicula, related_name="fecha")
+	email = models.ForeignKey(Usuario, related_name="fecha")
+	fecha = models.DateField(null=True,blank=True)
+
+	class Meta:
+		unique_together = ('codigo', 'email')
+		verbose_name = 'FechaPeliculaVista'
+		verbose_name_plural = 'FechasPeliculasVistas'
+		
+	def get_pelicula(self):
+		return self.codigo.codigo
+	def get_email(self):
+		return self.email.email
+
 class Consulta():
 
 	def listar_peliculas_vistas(self, usuario):

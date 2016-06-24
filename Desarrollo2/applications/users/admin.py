@@ -36,5 +36,13 @@ class CalificaAdmin(admin.ModelAdmin):
 	search_fields = ()
 admin.site.register(Calificacion, CalificaAdmin)
 
+class FechaAdmin(admin.ModelAdmin):
+	list_display = (
+		'get_pelicula','get_email','fecha'
+		)
+
+	search_fields = ()
+admin.site.register(FechaPeliculaVista, FechaAdmin)
+
 
 # Register your models here.
