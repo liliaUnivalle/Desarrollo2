@@ -21,7 +21,7 @@ admin.site.register(Lista_personal, Lista_personalAdmin)
 
 class ColeccionlAdmin(admin.ModelAdmin):
 	list_display = (
-		'id_genero','email','get_contenido'
+		'get_email','get_contenido'
 		)
 
 	search_fields = ()
@@ -43,6 +43,22 @@ class FechaAdmin(admin.ModelAdmin):
 
 	search_fields = ()
 admin.site.register(FechaPeliculaVista, FechaAdmin)
+
+class CineVistaAdmin(admin.ModelAdmin):
+	list_display = (
+		'get_pelicula','get_email','get_cine'
+		)
+
+	search_fields = ()
+admin.site.register(CineVista, CineVistaAdmin)
+
+class CineAdmin(admin.ModelAdmin):
+	list_display = (
+		'nombre',
+		)
+
+	search_fields = ()
+admin.site.register(Cine, CineAdmin)
 
 
 # Register your models here.

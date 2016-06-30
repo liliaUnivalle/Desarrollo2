@@ -20,5 +20,8 @@ urlpatterns = [
     url(r'^users/listarTodasLasPelicula/$', ListarTodasLasPeliculas.as_view(), name='listarTodasLasPelicula'),
     url(r'^users/vistasUltimoMes/$', MasVistasUltimoMes.as_view(), name='vistasUltimoMes'),
     url(r'^users/generosMasVistosUltimoMes/$', GenerosMasVistosUltimoMes.as_view(), name='generosMasVistosUltimoMes'),
-    
+    url(r'^users/coleccion/$', ListarColeccion.as_view(), name='coleccion'),    
+    url(r'^users/agregarColeccion/(\d+)$', AgregarColeccion.as_view(), name='agregarColeccion'),    
+    url(r'^users/estadisticas$', Estadisticas.as_view(), name='estadisticas'),    
+
 ]

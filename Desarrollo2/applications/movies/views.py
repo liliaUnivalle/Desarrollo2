@@ -9,6 +9,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 import models
 from applications.users.models import Usuario
+from applications.users.models import Cine
+from applications.users.models import CineVista
+from applications.users.models import Coleccion
 from applications.users.models import Lista_personal
 from applications.users.models import FechaPeliculaVista
 from applications.movies.models import *
@@ -208,7 +211,7 @@ def consultaPorGenero(genero, z):
 			if z < 1:
 				break
 			try:
-				pelicula_p = Pelicula.objects.get(codigo=n)
+				pelicula_p = Pelicula.objects.get(codigo=n)				
 				peliculasGenero.append(pelicula_p)
 			except:
 				peliculasGenero.append(crearPeliculaBD(n, "Regular"))
@@ -216,6 +219,25 @@ def consultaPorGenero(genero, z):
 
 	return peliculasGenero
 
+def consultaSimilares(pelicula, z):
+
+	peliculas = []
+	pelis= tmdb.Movies(pelicula)
+	response = pelis.similar_movies()
+
+	if pelis.total_results != 0:
+
+		for n in pelis.results:
+			if z < 1:
+				break
+			try:
+				pelicula_p = Pelicula.objects.get(codigo=n)				
+				peliculas.append(pelicula_p)
+			except:
+				peliculas.append(crearPeliculaBD(n, "Regular"))
+			z = z-1				
+
+	return peliculas
 
 def consultaPorActor(actor):
 
@@ -423,6 +445,7 @@ class VerMas(TemplateView):
 		user = Usuario.objects.get(email=nombre)
 		ver = True
 		vista = True
+		col = True
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
@@ -438,51 +461,27 @@ class VerMas(TemplateView):
 			for i in tipos1:
 				if i == pelicula.codigo:
 					vista = False
+
+			coleccion = Coleccion.objects.get(email=user)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
 		
 		except:
 			pelicula = None
 
+		cines = Cine.objects.all()
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
+		context={'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
 			context_instance=RequestContext(request))
 
-	def post(self,request,*args, **kwargs):
-		nombre = request.session['emailUser']
-		user = Usuario.objects.get(email=nombre)
-		ver = True
-		vista = True
-		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
-		try:
-			pelicula = Pelicula.objects.get(codigo=args[0])
-
-			
-			porver = user.get_porver()
-			tipos2 = porver.split(",")
-			for i in tipos2:
-				if i == pelicula.codigo:
-					ver = False
-
-			vistas1 = user.get_vistas()
-			tipos1 = vistas1.split(",")
-			for i in tipos1:
-				if i == pelicula.codigo:
-					vista = False
-
-		except:
-			pelicula = None
-
-		
-		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
-		return render_to_response(
-			'movies/infoPelis.html',
-			context,
-			context_instance=RequestContext(request))
-
+	
 class AgregarPorVer(TemplateView):
 	def get(self,request,*args, **kwargs):
 
@@ -490,6 +489,7 @@ class AgregarPorVer(TemplateView):
 		usuario = Usuario.objects.get(email=nombre)
 		ver = False
 		vista = True
+		col=True
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 
@@ -498,6 +498,13 @@ class AgregarPorVer(TemplateView):
 			for i in tipos1:
 				if i == pelicula.codigo:
 					vista = False
+			coleccion = Coleccion.objects.get(email=usuario)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
+
 			try:
 				
 				try:
@@ -513,29 +520,41 @@ class AgregarPorVer(TemplateView):
 		except:
 			pelicula = None
 
-		
+		cines = Cine.objects.all()
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		context={'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
 			context_instance=RequestContext(request))
 
 class AgregarVistas(TemplateView):
-	def get(self,request,*args, **kwargs):
+	def post(self,request,*args, **kwargs):
 
 		nombre = request.session['emailUser']
 		usuario = Usuario.objects.get(email=nombre)		
 		ver = True
 		vista = False		
+		col = True
+		lista = request.POST['lista']
+						
+		
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
-			
+			cine = Cine.objects.get(nombre=lista)
+						
 			porver = usuario.get_porver()
 			tipos2 = porver.split(",")
 			for i in tipos2:
 				if i == pelicula.codigo:
 					ver = False
+
+			coleccion = Coleccion.objects.get(email=usuario)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
 
 			try:
 				
@@ -543,18 +562,28 @@ class AgregarVistas(TemplateView):
 					usuario.lista_peliculas_vistas.get(codigo=pelicula.codigo)
 					messages.info(request,"la pelicula ya esta en esta lista")
 				except:
-					usuario.lista_peliculas_vistas.add(pelicula)
-					messages.info(request,"la pelicula fue agregada con exito")					
-					fecha = datetime.now()
-					print fecha					
-					fechaVista = FechaPeliculaVista(
-						codigo = pelicula,
-						email = usuario,
-						fecha = fecha,
-						)
-					fechaVista.save()
+					try:
+						usuario.lista_peliculas_vistas.add(pelicula)
+											
+						fecha = datetime.now()
+						print fecha					
+						fechaVista = FechaPeliculaVista(
+							codigo = pelicula,
+							email = usuario,
+							fecha = fecha,
+							)
+						fechaVista.save()
 
-
+						vi = CineVista(
+							codigo=pelicula,
+							email=usuario,
+							cine = cine)
+						vi.save()
+						
+						messages.info(request,"la pelicula fue agregada con exito")
+					except:
+						messages.info(request,"debe seleccionar un cine")					
+			
 					if not ver:
 						usuario.lista_peliculas_porver.remove(pelicula)
 						ver = True
@@ -566,13 +595,14 @@ class AgregarVistas(TemplateView):
 		except:
 			pelicula = None
 
-		
+		cines = Cine.objects.all()
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		context={'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
 			context_instance=RequestContext(request))
+    
 
 class Busqueda(TemplateView):
 	def post(self,request,*args, **kwargs):

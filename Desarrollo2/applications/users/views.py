@@ -12,6 +12,7 @@ from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
 from .models import *
 from applications.movies.views import consultaPorGenero
+from applications.movies.views import consultaSimilares
 from django.contrib import messages
 from applications.authentication.forms import GetRegister
 from django.contrib import messages
@@ -57,9 +58,12 @@ def generarRecomendaciones(nombre, user):
 
 	matriz.sort(reverse=True)
 	peliculas = []
+	#for i in codigos:
+	#	lista = consultaSimilares(i, 10)
+	#	peliculas = list(merge(lista, peliculas))
 	for i in range(3):
 		lista = consultaPorGenero(matriz[i][1], 10)
-		peliculas = list(merge(lista, peliculas))
+		peliculas.extend([element for element in lista if element not in peliculas])
 		
 	return peliculas
 
@@ -149,6 +153,87 @@ def generosMasVistosUltimoMes():
 
 	return matriz2
 
+def numeroRegistros():
+	users = Usuario.objects.filter(tipo="Cliente")
+	num = len(users)
+	return num
+
+def peliculasVistas(user):
+	peliculas=[]
+	vistas = user.get_vistas()
+	codigos = vistas.split(",")
+	for i in codigos:
+		try:
+			pelicula = Pelicula.objects.get(codigo=i)
+			peliculas.append(pelicula)
+		except:
+			pass
+
+	return peliculas
+
+def peliculasVer(user):
+	peliculas=[]
+	vistas = user.get_porver()
+	codigos = vistas.split(",")
+	for i in codigos:
+		try:
+			pelicula = Pelicula.objects.get(codigo=i)
+			peliculas.append(pelicula)
+		except:
+			pass
+
+	return peliculas
+
+
+def peliculasVistasEst():
+	users = Usuario.objects.filter(tipo="Cliente")
+	vistas = []
+	for i in users:
+		lista = peliculasVistas(i)
+		vistas.extend([element for element in lista if element not in vistas])
+	num = len(vistas)
+	return num
+
+def peliculasPorVerEst():
+	users = Usuario.objects.filter(tipo="Cliente")
+	vistas = []
+	for i in users:
+		lista = peliculasVer(i)
+		vistas.extend([element for element in lista if element not in vistas])
+	num = len(vistas)
+	return num
+
+def peliculasCalificadasEst():
+	users = Usuario.objects.filter(tipo="Cliente")
+	lista=[]
+	for i in users:
+		listaM =[]
+		calificaciones = Calificacion.objects.filter(email=i.email)
+		for e in calificaciones:
+			listaM.append(e.codigo)
+		lista.extend([element for element in listaM if element not in  lista])
+
+	num = len(lista)
+	print "peliculas calificadas: "+str(num)
+	return num
+
+def peliculasEnColecciones():
+	colecciones = Coleccion.objects.all()
+	listaR=[]
+	for i in colecciones:
+		listaM=[]
+		lista = i.get_contenido()
+		lista2=lista.split(",")
+		for e in lista2:
+			print e
+			try:
+				pelicula = Pelicula.objects.get(codigo=e)
+				listaM.append(pelicula)
+			except:
+				pass
+		listaR.extend([element for element in listaM if element not in  listaR])
+	num = len(listaR)
+	return num
 
 #----------------Templates------------------------------------------------------------------
 
@@ -159,14 +244,15 @@ class IndexView(TemplateView):
 			'users/login.html',
 			context_instance=RequestContext(request))
 
-
 class Cliente(TemplateView):
 	def get(self,request,*args, **kwargs):
+		print peliculasEnColecciones()
 		nombre = request.session['emailUser']
 		user = Usuario.objects.get(email=nombre)
 		nombre2 = request.session['nombre']
 		generosMasVistosUltimoMes()
 		authentication = True
+		peliculasVistasEst()
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		generos = Genero.objects.all()
 		context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
@@ -282,9 +368,9 @@ class AgregarAListaPersonal(TemplateView):
 		except:
 			pelicula = None
 
-		
+		cines = Cine.objects.all()
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'user':usuario, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas}
+		context={'cines':cines,'authentication':authentication, 'nombre':nombre, 'user':usuario, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
@@ -488,6 +574,7 @@ class Recomendaciones(TemplateView):
 		authentication = True
 		ten = {'nombre':"Recomendaciones: (lo mejor solo para ti)", 'lista':lista}
 		listas.append(ten)
+
 		context={'authentication':authentication, 'nombre':nombre, 'user':user, 'listas':listas}
 		return render_to_response(
 			'movies/inicio.html',
@@ -573,5 +660,92 @@ class ListarTodasLasPeliculas(TemplateView):
 		context={'authentication':authentication, 'user':usuario, 'nombre':nombre, 'listas':listas}
 		return render_to_response(
 			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+class ListarColeccion(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+
+		user = Usuario.objects.get(email=nombre)
+		listas = []
+		coleccionP =[]
+		coleccion = Coleccion.objects.get(email=user)
+		coleccion_peliculas = coleccion.get_contenido()
+		codigos = coleccion_peliculas.split(",")
+		try:
+			for i in codigos:
+				pelicula = Pelicula.objects.get(codigo=i)
+				coleccionP.append(pelicula)
+
+		except:
+				messages.info(request,"No hay peliculas en la coleccion")
+
+		ten = {'nombre':"Su Coleccion de peliculas", 'lista':coleccionP}
+		listas.append(ten)
+		
+		authentication = True
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
+		return render_to_response(
+			'movies/inicio.html',
+			context,
+			context_instance=RequestContext(request))
+
+class AgregarColeccion(TemplateView):
+	def get(self,request,*args, **kwargs):
+
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)
+		ver = True
+		vista = True
+		col = True
+		
+		pelicula = Pelicula.objects.get(codigo=args[0])
+
+		porver = usuario.get_porver()
+		tipos2 = porver.split(",")
+		for i in tipos2:
+			if i == pelicula.codigo:
+				ver = False
+
+		vistas1 = usuario.get_vistas()
+		tipos1 = vistas1.split(",")
+		for i in tipos1:
+			if i == pelicula.codigo:
+				vista = False
+
+		coleccion = Coleccion.objects.get(email=usuario)
+		coleccion_peliculas = coleccion.get_contenido()
+		codigos = coleccion_peliculas.split(",")
+		for i in codigos:
+			if i == pelicula.codigo:
+				col = False
+		if col:
+			coleccion.contenido.add(pelicula)
+			messages.info(request,"agregado a coleccion")
+			col=False
+		else:
+			messages.info(request,"ya estaba en la coleccion")
+				
+		authentication = True
+		context={'col':col, 'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+
+class Estadisticas(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		vistas = peliculasVistasEst()
+		ver = peliculasPorVerEst()
+		calificadas = peliculasCalificadasEst()
+		colecciones = peliculasEnColecciones()
+		registro = numeroRegistros()
+		authentication = True
+		context={'vistas':vistas,'ver':ver,'calificadas':calificadas,'colecciones':colecciones,'registro':registro ,'authentication':authentication,'nombre':nombre, 'user':user}
+		return render_to_response(
+			'users/estadisticas.html',
 			context,
 			context_instance=RequestContext(request))

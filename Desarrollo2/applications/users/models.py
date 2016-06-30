@@ -42,15 +42,16 @@ class Lista_personal(models.Model):
 
 
 class Coleccion(models.Model):
-	id_genero = models.ForeignKey(Genero, related_name="li")
-	email = models.ForeignKey(Usuario, related_name="lista4_1")
+	email = models.OneToOneField(Usuario, primary_key=True,related_name="lista4_1")
 	contenido = models.ManyToManyField(Pelicula)
 
+	def get_email(self):
+		return self.email.email
+
 	def get_contenido(self):
-		return ",".join([str(p.nombre) for p in self.contenido.all()])
+		return ",".join([str(p.codigo) for p in self.contenido.all()])
 
 	class Meta:
-		unique_together = ('id_genero', 'email')
 		verbose_name = 'Coleccion'
 		verbose_name_plural = 'Colecciones'
 
@@ -85,9 +86,23 @@ class FechaPeliculaVista(models.Model):
 	def get_email(self):
 		return self.email.email
 
-class Consulta():
+class Cine(models.Model):
+	nombre = models.CharField(max_length=100,primary_key=True)
 
-	def listar_peliculas_vistas(self, usuario):
-		lista = Lista_peliculas_vistas.object.filter(email=usuario)
-		return lista
+class CineVista(models.Model):
+	codigo = models.ForeignKey(Pelicula, related_name="cineVista")
+	email = models.ForeignKey(Usuario, related_name="cineVista")
+	cine = models.ForeignKey(Cine, related_name="cineVista")
+
+	class Meta:
+		unique_together = ('codigo', 'email')
+		verbose_name = 'CineVista'
+		verbose_name_plural = 'CineVistas'
+		
+	def get_pelicula(self):
+		return self.codigo.codigo
+	def get_email(self):
+		return self.email.email
+	def get_cine(self):
+		return self.cine.nombre
 

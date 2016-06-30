@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 import models
+from applications.users.models import Coleccion
 from applications.users.models import Usuario
 from django.shortcuts import render
 from Desarrollo2.settings import FILES_ROOT
@@ -133,6 +134,7 @@ class RegisterPage(TemplateView):
 		form = GetRegister(request.POST)
 		message=""
 		messageB = True
+		generos = extraerGeneroTotales()
 		if form.is_valid():
 			cd = form.cleaned_data 
 			email = cd['email']
@@ -158,6 +160,10 @@ class RegisterPage(TemplateView):
 					for item in generos:
 						genero_p = Genero.objects.get(nombre=item)
 						usuario.generos.add(genero_p)
+					coleccion = Coleccion(
+						email = usuario,
+						)
+					coleccion.save()
 					message = "El usuario registrado con exito. Ahora inicie sesión"
 					context = {'messageB':messageB, 'message':message}
 					return render_to_response(
@@ -168,11 +174,11 @@ class RegisterPage(TemplateView):
 				message = "Las contraseñas no coinciden."
 		else:
 			message = "Debe llenar todos los campos"
-			context = { 'form':form, 'message':message, 'messageB':messageB}
-			return render_to_response(
-				'authentication/register.html',
-				context,
-				context_instance=RequestContext(request))
+		context = {'generos':generos, 'form':form, 'message':message, 'messageB':messageB}
+		return render_to_response(
+			'authentication/register.html',
+			context,
+			context_instance=RequestContext(request))
 
 class Index(TemplateView):
 	def get(self,request,*args,**kwargs):

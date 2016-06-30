@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="col-md-12 ui-sortable">
+	<div style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF; "class="col-md-12 ui-sortable">
+		<div class="col-md-12 ui-sortable" >
+			<font size=6  color="#000000"> <B> Estadisticas Generales</B></font>
+		</div>
+		<div class="col-md-12 ui-sortable" >
+			<div class="panel-body">
+			<center>
+	            <table class="table table-striped" style="border: black 2px solid;">
+	                <thead>
+	                    <tr>
+	                        <th><center>Dato</center></th>
+	                        <th><center>Cantidad</center></th>
+	                    </tr>
+	                </thead>
+	                <tbody>	                	
+	                    <tr>
+	                        <td>Cantidad de peliculas vistas</td>
+	                        <td><center>{{vistas}}</center></td>                     
+	                    </tr>
+	                    <tr>
+	                        <td>Cantidad de peliculas marcadas por ver</td>
+	                        <td><center>{{ver}}</center></td>                     
+	                    </tr>
+	                    <tr>
+	                        <td>Cantidad de registros</td>
+	                        <td><center>{{registro}}</center></td>                     
+	                    </tr>
+	                    <tr>
+	                        <td>Cantidad de peliculas que se han agregado a una colección</td>
+	                        <td><center>{{colecciones}}</center></td>                     
+	                    </tr>
+	                    <tr>
+	                        <td>Cantidad de peliculas calificadas</td>
+	                        <td><center>{{calificadas}}</center></td>                     
+	                    </tr>
+	                </tbody>
+	            </table>
+	        </center>
+        	</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script>
+    $(document).ready(function() {
+        App.init();
+        LoginV2.init();
+    });
+</script>
+{% endblock %}
