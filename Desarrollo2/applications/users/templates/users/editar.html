@@ -1,0 +1,81 @@
+
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+<div class="col-md-12 ui-sortable">
+	<div style=" border-radius: 15px; border: 2px solid #0B173B; padding: 20px;  background:#FFFFFF; "class="col-md-12 ui-sortable">
+		<div class="col-md-6 ui-sortable" style="border-bottom: #0B173B 10px dotted;">
+			<font size=6  color="#000000"> <B> Bienenid@ {{user.nombre}}</B></font>
+		</div>
+		<div class="col-md-12 ui-sortable" >
+			</p>
+			<div class="col-md-7 ui-sortable" style="  margin-top: 30px;">
+		<div class="col-md-12 ui-sortable" >
+			</p>
+			<div class="col-md-7 ui-sortable" style="  margin-top: 30px;">
+
+				<div class="col-md-12 control-label ui-sortable"  >
+					<font size=5  color="#000000"> <B>Editar Datos personales</B></font>
+				</div>
+				<div class="col-md-12 control-label ui-sortable" style="  margin-top: 10px;" >
+				<form action="{% url 'users:editar' %}" method="POST" class="margin-bottom-0"> {% csrf_token %}
+					<table>
+						<tr>
+							<td>
+								<font size=3  color="#000000"> <B>Nombre:&nbsp </B></font>
+							</td>
+							<td>
+								<input name="name" type="text" class="form-control input-lg" placeholder="{{user.nombre}}" />
+							</td>							
+						</tr>
+						<tr>
+							<td>
+								<font size=3  color="#000000"> <B>Correo:&nbsp&nbsp</B></font>
+							</td>
+							<td>
+								<input name="email" type="text" class="form-control input-lg" placeholder="{{nombre}}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<font size=3  color="#000000"> <B>Contraseña:&nbsp&nbsp</B></font>
+							</td>
+							<td>
+								<input name="contrasena1" type="text" class="form-control input-lg" placeholder="*************" />	
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<font size=3  color="#000000"> <B>Confirmar:&nbsp&nbsp</B></font>
+							</td>
+							<td>
+								<input name="contrasena2" type="text" class="form-control input-lg" placeholder="*************" />	
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<font size=3  color="#000000"> <B>Guardar:&nbsp&nbsp</B></font>
+							</td>				
+							<td>
+							<button type="submit" >
+								<img type="submit" src="{% static "assets/img/save.png" %}" style="width:40px;height:40px;" />
+							</button>
+							</td>
+						</tr>
+					</table>
+				</form>
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+{{ block.super }}
+{% endblock %}

@@ -28,9 +28,6 @@
 							</td>
 							<td>
 								<font size=3  color="#000000"> {{user.nombre}}&nbsp&nbsp</font>
-							</td>
-							<td>
-								<img src="{% static "assets/img/pencil.png" %}" style="width:20px;height:20px;" />
 							</td>							
 						</tr>
 						<tr>
@@ -40,8 +37,23 @@
 							<td>
 								<font size=3  color="#000000">{{nombre}}&nbsp&nbsp</font>
 							</td>
+						</tr>
+						<tr>
 							<td>
-								<img src="{% static "assets/img/pencil.png" %}" style="width:20px;height:20px;" />
+								<font size=3  color="#000000"> <B>Contraseña:&nbsp&nbsp</B></font>
+							</td>
+							<td>
+								<font size=3  color="#000000">*************&nbsp&nbsp</font>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<font size=3  color="#000000"> <B>Editar:&nbsp&nbsp</B></font>
+							</td>				
+							<td>
+								<a href="{% url 'users:editar' %}" data-lightbox="gallery-group-1">
+									<img src="{% static "assets/img/pencil.png" %}" style="width:40px;height:40px;" />
+								</a>
 							</td>
 						</tr>
 					</table>

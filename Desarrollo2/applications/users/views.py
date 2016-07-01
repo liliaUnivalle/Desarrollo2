@@ -791,3 +791,58 @@ class PeliculasPorCine(TemplateView):
 			'users/cines.html',
 			context,
 			context_instance=RequestContext(request))
+
+class Editar(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		nombre2 = request.session['nombre']
+		generosMasVistosUltimoMes()
+		authentication = True
+		context={'authentication':authentication,'nombre':nombre, 'nombre2':nombre2, 'user':user}
+		return render_to_response(
+			'users/editar.html',
+			context,
+			context_instance=RequestContext(request))
+
+	def post(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		nombre2 = request.session['nombre']
+		generosMasVistosUltimoMes()
+		authentication = True
+		cond = False
+		name = request.POST['name']
+		email = request.POST['email']
+		contrasena1 = request.POST['contrasena1']
+		contrasena2 = request.POST['contrasena2']
+		if name != "":
+			user.nombre=name
+			cond = True
+		if email != "":
+			user.email=email
+			cond = True
+		if contrasena1 != "" or contrasena2 != "":
+			if contrasena1 == contrasena2:
+				user.contrasena = contrasena1
+				cond = True
+		if cond:
+			if name != "":
+				request.session['nombre']=name
+				nombre2 = name
+			if email != "":
+				nombre = email
+				request.session['emailUser'] = email
+			
+			user.save()
+			URL = 'users/cliente.html'
+			messages.info(request,"Datos modificados correctamente")
+		else:
+			URL = 'users/editar.html'
+			messages.info(request,"Los datos no fueron modificados")
+
+		context={'authentication':authentication,'nombre':nombre, 'nombre2':nombre2, 'user':user}
+		return render_to_response(
+			URL,
+			context,
+			context_instance=RequestContext(request))
