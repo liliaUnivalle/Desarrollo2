@@ -193,7 +193,6 @@ def consultaPorTitulo(titulo):
 				pelicula_p = Pelicula.objects.get(codigo=n)
 				peliculasTitulo.append(pelicula_p)
 			except:
-				if n['media_type'] == 'movie':
 					peliculasTitulo.append(crearPeliculaBD(n, "Regular"))
 
 	return peliculasTitulo
@@ -390,6 +389,7 @@ class ListarPorVer(TemplateView):
 		nombre = request.session['emailUser']
 		nombreUsuario = request.POST['usuario']
 		user = Usuario.objects.get(email=nombreUsuario)
+		user1 = Usuario.objects.get(email=nombre)
 		listas = []
 		peliculas_por_ver =[]
 		porver = user.get_porver()
@@ -406,7 +406,7 @@ class ListarPorVer(TemplateView):
 		listas.append(ten)
 		
 		authentication = True
-		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user}
+		context={'authentication':authentication, 'nombre':nombre, 'listas':listas, 'user':user1}
 		return render_to_response(
 			'movies/inicio.html',
 			context,
@@ -450,25 +450,27 @@ class VerMas(TemplateView):
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 
-			porver = user.get_porver()
-			tipos2 = porver.split(",")
-			for i in tipos2:
-				if i == pelicula.codigo:
-					ver = False
+			try:
+				porver = user.get_porver()
+				tipos2 = porver.split(",")
+				for i in tipos2:
+					if i == pelicula.codigo:
+						ver = False
 
-			vistas1 = user.get_vistas()
-			tipos1 = vistas1.split(",")
-			for i in tipos1:
-				if i == pelicula.codigo:
-					vista = False
+				vistas1 = user.get_vistas()
+				tipos1 = vistas1.split(",")
+				for i in tipos1:
+					if i == pelicula.codigo:
+						vista = False
 
-			coleccion = Coleccion.objects.get(email=user)
-			coleccion_peliculas = coleccion.get_contenido()
-			codigos = coleccion_peliculas.split(",")
-			for i in codigos:
-				if i == pelicula.codigo:
-					col = False
-		
+				coleccion = Coleccion.objects.get(email=user)
+				coleccion_peliculas = coleccion.get_contenido()
+				codigos = coleccion_peliculas.split(",")
+				for i in codigos:
+					if i == pelicula.codigo:
+						col = False
+			except:
+				pass
 		except:
 			pelicula = None
 

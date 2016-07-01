@@ -24,5 +24,6 @@ urlpatterns = [
     url(r'^users/agregarColeccion/(\d+)$', AgregarColeccion.as_view(), name='agregarColeccion'),    
     url(r'^users/estadisticas$', Estadisticas.as_view(), name='estadisticas'),    
     url(r'^users/cines$', PeliculasPorCine.as_view(), name='cines'),
-    url(r'^users/editar$', Editar.as_view(), name='editar'),    
+    url(r'^users/editar$', Editar.as_view(), name='editar'),
+    url(r'^users/listasCliente$', ListasCliente.as_view(), name='listasCliente'),    
 ]

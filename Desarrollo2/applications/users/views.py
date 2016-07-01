@@ -252,13 +252,10 @@ class IndexView(TemplateView):
 
 class Cliente(TemplateView):
 	def get(self,request,*args, **kwargs):
-		print peliculasEnColecciones()
 		nombre = request.session['emailUser']
 		user = Usuario.objects.get(email=nombre)
 		nombre2 = request.session['nombre']
-		generosMasVistosUltimoMes()
 		authentication = True
-		peliculasVistasEst()
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		generos = Genero.objects.all()
 		context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
@@ -313,7 +310,9 @@ class ListarListaPersonal(TemplateView):
 
 		ten = {'nombre':"Lista Personal: "+lista, 'lista':listaPersonal}
 		listas.append(ten)
-		
+		tam = len(listaPersonal)
+		if tam == 0:
+			messages.info(request,"la lista está vacía")
 		authentication = True
 		context={'authentication':authentication, 'user':usuario, 'nombre':nombre, 'listas':listas}
 		return render_to_response(
@@ -326,27 +325,41 @@ class ListarListaPersonal(TemplateView):
 		usuario = Usuario.objects.get(email=nombre)
 		lista = request.POST['lista']
 		request.session['lista'] = lista	
-		lista_personal = Lista_personal.objects.get(nombre=lista, email=nombre)	 	
-		listas = []
-		vistas = lista_personal. get_contenido()
-		codigos = vistas.split(",")
-		listaPersonal =[]
-		for i in codigos:
-			try:
-				pelicula = Pelicula.objects.get(codigo=i)
-				listaPersonal.append(pelicula)
-			except:
-				print "Hay error"
+		if lista == "--":		
+			nombre2 = request.session['nombre']
+			authentication = True
+			listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
+			generos = Genero.objects.all()
+			messages.info(request,"debe seleccionar una lista")
+			context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':usuario}
+			return render_to_response(
+				'users/cliente.html',
+				context,
+				context_instance=RequestContext(request))
+		else:
+			lista_personal = Lista_personal.objects.get(nombre=lista, email=nombre)	 	
+			listas = []
+			vistas = lista_personal. get_contenido()
+			codigos = vistas.split(",")
+			listaPersonal =[]
+			for i in codigos:
+				try:
+					pelicula = Pelicula.objects.get(codigo=i)
+					listaPersonal.append(pelicula)
+				except:
+					print "Hay error"
 
-		ten = {'nombre':"Lista Personal: "+lista, 'lista':listaPersonal}
-		listas.append(ten)
-		
-		authentication = True
-		context={'authentication':authentication, 'user':usuario, 'nombre':nombre, 'listas':listas}
-		return render_to_response(
-			'movies/listaPersonal.html',
-			context,
-			context_instance=RequestContext(request))
+			ten = {'nombre':"Lista Personal: "+lista, 'lista':listaPersonal}
+			listas.append(ten)
+			tam = len(listaPersonal)
+			if tam == 0:
+				messages.info(request,"la lista está vacía")
+			authentication = True
+			context={'authentication':authentication, 'user':usuario, 'nombre':nombre, 'listas':listas}
+			return render_to_response(
+				'movies/listaPersonal.html',
+				context,
+				context_instance=RequestContext(request))
 
 class AgregarAListaPersonal(TemplateView):
 	def get(self,request,*args, **kwargs):
@@ -634,14 +647,16 @@ class ListarVistasPorGenero(TemplateView):
 		vistas2 = vistas.split(',')
 		lista=[]
 		for i in vistas2:
-			pelicula = Pelicula.objects.get(codigo=i)
-			generos = pelicula.generos.all()
-			for e in generos:
-				if e.nombre == genero:
-					lista.append(pelicula)
+			try:
+				pelicula = Pelicula.objects.get(codigo=i)
+				generos = pelicula.generos.all()
+				for e in generos:
+					if e.nombre == genero:
+						lista.append(pelicula)
+			except:
+				pass			
 		
 		cantidad = len (lista)
-
 		
 		message = "El usuario "+usuario+" ha visto "+ str(cantidad) + " peliculas del genero "+genero
 		messages.info(request,message)
@@ -813,14 +828,10 @@ class Editar(TemplateView):
 		authentication = True
 		cond = False
 		name = request.POST['name']
-		email = request.POST['email']
 		contrasena1 = request.POST['contrasena1']
 		contrasena2 = request.POST['contrasena2']
 		if name != "":
 			user.nombre=name
-			cond = True
-		if email != "":
-			user.email=email
 			cond = True
 		if contrasena1 != "" or contrasena2 != "":
 			if contrasena1 == contrasena2:
@@ -830,9 +841,6 @@ class Editar(TemplateView):
 			if name != "":
 				request.session['nombre']=name
 				nombre2 = name
-			if email != "":
-				nombre = email
-				request.session['emailUser'] = email
 			
 			user.save()
 			URL = 'users/cliente.html'
@@ -844,5 +852,19 @@ class Editar(TemplateView):
 		context={'authentication':authentication,'nombre':nombre, 'nombre2':nombre2, 'user':user}
 		return render_to_response(
 			URL,
+			context,
+			context_instance=RequestContext(request))
+
+class ListasCliente(TemplateView):
+	def get(self,request,*args, **kwargs):
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		nombre2 = request.session['nombre']
+		authentication = True
+		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
+		generos = Genero.objects.all()
+		context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
+		return render_to_response(
+			'users/listasCliente.html',
 			context,
 			context_instance=RequestContext(request))
