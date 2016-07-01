@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+{% load tz %}
+
+{% block css %}
+{{ block.super }}
+{% endblock %}
+{% block content %}
+{% for i in lista %}
+	<div class="panel panel-inverse">
+	    <div class="panel-heading">
+	        <h4 class="panel-title">{{i.nombreCine}}</h4>
+	    </div>
+	    <div class="panel-body">
+	        <table class="table">
+	            <thead>
+	                <tr>
+	                    <th>Pelicula</th>
+	                    <th>Cantidad</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	{% for e in i.matriz %}
+	                <tr>
+	                    <td>{{e.pelicula.titulo}}</td>
+	                    <td>{{e.cantidad}}</td>
+	                </tr>
+	                {% endfor %}
+	            </tbody>
+	        </table>
+	    </div>
+	</div>
+{% endfor %}
+{% endblock %}
+{% block js %}
+{{ block.super }}
+{% endblock %}

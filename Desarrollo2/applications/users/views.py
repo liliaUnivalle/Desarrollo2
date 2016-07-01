@@ -20,6 +20,12 @@ from datetime import datetime
 from heapq import merge
 
 # Create your views here.
+
+class CineClass:
+	def __init__(self, nombreCine, matriz):
+		self.nombreCine = nombreCine
+		self.matriz = matriz
+
 def generarRecomendaciones(nombre, user):
 	peliculasVistas = user.lista_peliculas_vistas
 	listas = []
@@ -747,5 +753,41 @@ class Estadisticas(TemplateView):
 		context={'vistas':vistas,'ver':ver,'calificadas':calificadas,'colecciones':colecciones,'registro':registro ,'authentication':authentication,'nombre':nombre, 'user':user}
 		return render_to_response(
 			'users/estadisticas.html',
+			context,
+			context_instance=RequestContext(request))
+
+class PeliculasPorCine(TemplateView):
+	def get(self,request,*args, **kwargs):
+		cines = Cine.objects.all()
+		lista = []
+		for i in cines:
+			matriz = []
+			cond = True
+			vistas = CineVista.objects.filter(cine=i)
+			for e in vistas:
+				for u in matriz:
+					if u[1] == e.codigo:
+						u[0] = u[0] + 1
+						cond = False
+						break
+				if cond:
+					tam=len(matriz)
+					matriz.append([])
+					matriz[tam].append(1)
+					matriz[tam].append(e.codigo)
+			matriz.sort(reverse=True)
+			matriz2=[]
+			for z in matriz:
+				if z[0] != 0:
+					dic = {'cantidad':z[0], 'pelicula':z[1]}
+					matriz2.append(dic)
+			cine = CineClass(i.nombre, matriz2)
+			lista.append(cine)
+		nombre = request.session['emailUser']
+		user = Usuario.objects.get(email=nombre)
+		authentication = True
+		context={'lista':lista,'authentication':authentication,'nombre':nombre, 'user':user}
+		return render_to_response(
+			'users/cines.html',
 			context,
 			context_instance=RequestContext(request))
