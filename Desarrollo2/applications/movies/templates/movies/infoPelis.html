@@ -21,14 +21,34 @@
                 <a href="assets/img/gallery/gallery-1.jpg" data-lightbox="gallery-group-1">
                     <img src={{pelicula.imagen}} style="width:360px;height:500px;"/>
                 </a>
+            </div>           
+            <div class="col-md-12 ui-sortable" style="  margin-top: 2px;">  
+            	<font size=4  color="black"><B><center>Calificacion: {{cal}}</center></B></font>
             </div>
-             
+            <form action="{% url 'movies:calificar' pelicula.codigo %}" method="POST" class="margin-bottom-0"> {% csrf_token %}
+            <div class="col-md-12 ui-sortable">  
+				<div class="form-horizontal form-bordered" style="  margin-top: 2px;">
+	                <div class="col-md-5 ui-sortable">                	                            
+	                    <select name="calificacion" class="form-control">
+	                        <option>1</option>
+	                        <option>2</option>
+	                        <option>3</option>
+	                        <option>4</option>
+	                        <option>5</option>
+	                    </select>	                        
+	                </div>	           
+	                <div class="col-md-6 ui-sortable" >
+	                    <center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="form-control"><font color="white">Calificar</font></button></center>
+	                </div>
+	            </div>
+	        </div>
+	        </form> 
             <form action="{% url 'users:agregarAListaPersonal' pelicula.codigo %}" method="POST" class="margin-bottom-0"> {% csrf_token %}
-            <div class="col-md-12 ui-sortable">  
-            	<label ><font size=4  color="black"> <B>Agregar a una lista</B></font></label>
+            <div class="col-md-12 ui-sortable" style="  margin-top: 2px;">  
+            	<font size=4  color="black"><B><center>Agregar a una lista</center></B></font>
             </div>
             <div class="col-md-12 ui-sortable">  
-				<div class="form-horizontal form-bordered" style="  margin-top: 10px;">
+				<div class="form-horizontal form-bordered" style="  margin-top: 2px;">
 	                <div class="col-md-5 ui-sortable">                	                            
 	                    <select name="lista" class="form-control">
 	                    	<option>Seleccionar lista</option>
@@ -46,11 +66,13 @@
             
 	        {% if vista %}
 	        <form action="{% url 'movies:vistas' pelicula.codigo %}" method="POST" class="margin-bottom-0"> {% csrf_token %}
-	        	
-	            <div class="col-md-2 ui-sortable" style="  margin-top: 10px;">
+	        	<div class="col-md-12 ui-sortable">  
+	            	<label ><font size=4  color="black"><center><B>Donde la viste</B></center></font></label>
+	            </div>
+	            <div class="col-md-2 ui-sortable" style="  margin-top: 2px;">
 	            	<font size=4 > <B>cine: </B></font>
 	            </div>
-	            <div class="col-md-6 ui-sortable" style="  margin-top: 10px;">                           
+	            <div class="col-md-6 ui-sortable" style="  margin-top: 2px;">                           
 	                    <select name="lista" class="form-control">
 	                    	<option>Seleccionar lista</option>
 	                        {% for i in cines %}
@@ -58,27 +80,30 @@
 	                        {% endfor %}
 	                    </select>	                        
 	            </div>	
-	            <div class="col-md-4 ui-sortable" style="  margin-top: 10px;">
-	        		 <center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="form-control"><font color="white">Ya la vi</font></button></center>
+	            <div class="col-md-12 ui-sortable" style="  margin-top: 2px;">
+	            	<center><font color="white">Ya la vi</font></center>
 	        	</div>
 	        </form>
             {% else%}
-            	<div class="col-md-6 ui-sortable" style="  margin-top: 10px;">
-            		<font size=4  color="black"> <B>Ya la viste </B></font></a>	            	
+            	<div class="col-md-12 ui-sortable" style="  margin-top: 2px;">  
+	            	<font size=4  color="black"><B><center>mas informacion</center></B></font>
+	            </div>
+            	<div class="col-md-12 ui-sortable" style="  margin-top: 2px;">
+            		<font size=4  color="black"><B><center>Ya la viste</center></B></font>	            	
 	            </div>
 
 	        {% endif %}
 	        {% if ver %}
-	            <div class="col-md-12 ui-sortable" style="  margin-top: 10px;" >
+	            <div class="col-md-12 ui-sortable" style="  margin-top: 2px;" >
 	            	<a href="{% url 'movies:ver' pelicula.codigo %}" id="ver"><font size=4 > <B> <center>+La quiero ver</center> </B></font></a>
 	            </div>
             {% else%}
-            	<div class="col-md-12 ui-sortable"style="  margin-top: 10px;" >
+            	<div class="col-md-12 ui-sortable"style="  margin-top: 2px;" >
             		<font size=4  color="black"> <B><center>En espera de ver </center> </B></font></a>	            	
 	            </div>
 	        {% endif %}
 	        {% if col %}
-	            <div class="col-md-12 ui-sortable" style="  margin-top: 10px;">
+	            <div class="col-md-12 ui-sortable" style="  margin-top: 2px;">
 	            	<center><a href="{% url 'users:agregarColeccion' pelicula.codigo %}" id="vista"><font size=4 > <B>+Agregar a Coleccion </B></font></a></center>
 	            </div>
 	        {% endif %}

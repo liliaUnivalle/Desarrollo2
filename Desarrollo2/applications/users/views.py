@@ -287,7 +287,7 @@ class CrearNuevaLista(TemplateView):
 		listasPersonalizadas =  Lista_personal.objects.all()
 		context={'authentication':authentication, 'nombre':nombre, 'user':user, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas }
 		return render_to_response(
-			'users/cliente.html',
+			'users/listasCliente.html',
 			context,
 			context_instance=RequestContext(request))
 
@@ -637,7 +637,7 @@ class ListarVistasPorGenero(TemplateView):
 			context={'authentication':authentication,'generos':generos, 'users':users, 'nombre':nombre, 'user':user}
 		elif user.tipo == "Cliente":
 			usuario = nombre
-			url = 'users/cliente.html'
+			url = 'users/listasCliente.html'
 			listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 			context={'authentication':authentication, 'generos':generos, 'nombre':nombre, 'listasPersonalizadas':listasPersonalizadas , 'user':user}
 
@@ -687,7 +687,6 @@ class ListarTodasLasPeliculas(TemplateView):
 class ListarColeccion(TemplateView):
 	def get(self,request,*args, **kwargs):
 		nombre = request.session['emailUser']
-
 		user = Usuario.objects.get(email=nombre)
 		listas = []
 		coleccionP =[]
@@ -729,6 +728,12 @@ class AgregarColeccion(TemplateView):
 			if i == pelicula.codigo:
 				ver = False
 
+		try:
+			calificacion = Calificacion.objects.get(email=user,codigo=pelicula)
+			cal=calificacion.valor_Calificacion + "Estrellas"
+		except:
+			cal="no ha sido calificado"
+
 		vistas1 = usuario.get_vistas()
 		tipos1 = vistas1.split(",")
 		for i in tipos1:
@@ -749,7 +754,7 @@ class AgregarColeccion(TemplateView):
 			messages.info(request,"ya estaba en la coleccion")
 				
 		authentication = True
-		context={'col':col, 'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		context={'cal':cal,'col':col, 'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,

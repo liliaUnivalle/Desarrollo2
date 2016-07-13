@@ -8,12 +8,7 @@ from django.views.generic import TemplateView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 import models
-from applications.users.models import Usuario
-from applications.users.models import Cine
-from applications.users.models import CineVista
-from applications.users.models import Coleccion
-from applications.users.models import Lista_personal
-from applications.users.models import FechaPeliculaVista
+from applications.users.models import *
 from applications.movies.models import *
 from Desarrollo2.settings import FILES_ROOT
 from Desarrollo2.settings import MEDIA_ROOT
@@ -448,21 +443,30 @@ class VerMas(TemplateView):
 		col = True
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		try:
-			pelicula = Pelicula.objects.get(codigo=args[0])
-
+			pelicula = Pelicula.objects.get(codigo=args[0])			
 			try:
 				porver = user.get_porver()
 				tipos2 = porver.split(",")
 				for i in tipos2:
 					if i == pelicula.codigo:
 						ver = False
-
+			except:
+				pass
+			try:
+				calificacion = Calificacion.objects.get(email=user,codigo=pelicula)
+				cal=calificacion.valor_Calificacion + "Estrellas"
+			except:
+				cal="no ha sido calificado"
+			try:
 				vistas1 = user.get_vistas()
 				tipos1 = vistas1.split(",")
 				for i in tipos1:
 					if i == pelicula.codigo:
-						vista = False
+						vista = False				
+			except:
+				pass
 
+			try:
 				coleccion = Coleccion.objects.get(email=user)
 				coleccion_peliculas = coleccion.get_contenido()
 				codigos = coleccion_peliculas.split(",")
@@ -477,11 +481,13 @@ class VerMas(TemplateView):
 		cines = Cine.objects.all()
 		
 		authentication = True
-		context={'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
+		context={'cal':cal,'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas, 'user':user}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
 			context_instance=RequestContext(request))
+
+
 
 	
 class AgregarPorVer(TemplateView):
@@ -495,17 +501,37 @@ class AgregarPorVer(TemplateView):
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 
-			vistas1 = usuario.get_vistas()
-			tipos1 = vistas1.split(",")
-			for i in tipos1:
-				if i == pelicula.codigo:
-					vista = False
-			coleccion = Coleccion.objects.get(email=usuario)
-			coleccion_peliculas = coleccion.get_contenido()
-			codigos = coleccion_peliculas.split(",")
-			for i in codigos:
-				if i == pelicula.codigo:
-					col = False
+			try:
+				porver = usuario.get_porver()
+				tipos2 = porver.split(",")
+				for i in tipos2:
+					if i == pelicula.codigo:
+						ver = False
+			except:
+				pass
+			try:
+				calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+				cal=calificacion.valor_Calificacion + "Estrellas"
+			except:
+				cal="no ha sido calificado"
+			try:
+				vistas1 = usuario.get_vistas()
+				tipos1 = vistas1.split(",")
+				for i in tipos1:
+					if i == pelicula.codigo:
+						vista = False				
+			except:
+				pass
+
+			try:
+				coleccion = Coleccion.objects.get(email=usuario)
+				coleccion_peliculas = coleccion.get_contenido()
+				codigos = coleccion_peliculas.split(",")
+				for i in codigos:
+					if i == pelicula.codigo:
+						col = False
+			except:
+				pass
 
 			try:
 				
@@ -524,13 +550,62 @@ class AgregarPorVer(TemplateView):
 
 		cines = Cine.objects.all()
 		authentication = True
-		context={'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		context={'cal':cal,'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
 			context_instance=RequestContext(request))
 
 class AgregarVistas(TemplateView):
+	def get(self,request,*args, **kwargs):
+
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)		
+		ver = True
+		vista = False		
+		col = True						
+		
+		pelicula = Pelicula.objects.get(codigo=args[0])
+					
+		try:
+			porver = usuario.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
+		except:
+			pass
+		try:
+			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+			cal=calificacion.valor_Calificacion + "Estrellas"
+		except:
+			cal="no ha sido calificado"
+		try:
+			vistas1 = usuario.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False				
+		except:
+			pass
+
+		try:
+			coleccion = Coleccion.objects.get(email=usuario)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
+		except:
+			pass
+
+		cines = Cine.objects.all()
+		authentication = True
+		context={'cal':cal,'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
 	def post(self,request,*args, **kwargs):
 
 		nombre = request.session['emailUser']
@@ -545,18 +620,37 @@ class AgregarVistas(TemplateView):
 			pelicula = Pelicula.objects.get(codigo=args[0])
 			cine = Cine.objects.get(nombre=lista)
 						
-			porver = usuario.get_porver()
-			tipos2 = porver.split(",")
-			for i in tipos2:
-				if i == pelicula.codigo:
-					ver = False
+			try:
+				porver = usuario.get_porver()
+				tipos2 = porver.split(",")
+				for i in tipos2:
+					if i == pelicula.codigo:
+						ver = False
+			except:
+				pass
+			try:
+				calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+				cal=calificacion.valor_Calificacion + "Estrellas"
+			except:
+				cal="no ha sido calificado"
+			try:
+				vistas1 = usuario.get_vistas()
+				tipos1 = vistas1.split(",")
+				for i in tipos1:
+					if i == pelicula.codigo:
+						vista = False				
+			except:
+				pass
 
-			coleccion = Coleccion.objects.get(email=usuario)
-			coleccion_peliculas = coleccion.get_contenido()
-			codigos = coleccion_peliculas.split(",")
-			for i in codigos:
-				if i == pelicula.codigo:
-					col = False
+			try:
+				coleccion = Coleccion.objects.get(email=usuario)
+				coleccion_peliculas = coleccion.get_contenido()
+				codigos = coleccion_peliculas.split(",")
+				for i in codigos:
+					if i == pelicula.codigo:
+						col = False
+			except:
+				pass
 
 			try:
 				
@@ -599,7 +693,119 @@ class AgregarVistas(TemplateView):
 
 		cines = Cine.objects.all()
 		authentication = True
-		context={'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		context={'cal':cal,'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+    
+class Calificar(TemplateView):
+	def get(self,request,*args, **kwargs):
+
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)		
+		ver = True
+		vista = False		
+		col = True						
+		
+		pelicula = Pelicula.objects.get(codigo=args[0])
+					
+		try:
+			porver = usuario.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
+		except:
+			pass
+		try:
+			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+			cal=calificacion.valor_Calificacion + "Estrellas"
+		except:
+			cal="no ha sido calificado"
+		try:
+			vistas1 = usuario.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False				
+		except:
+			pass
+
+		try:
+			coleccion = Coleccion.objects.get(email=usuario)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
+		except:
+			pass
+
+		cines = Cine.objects.all()
+		authentication = True
+		context={'cal':cal,'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
+		return render_to_response(
+			'movies/infoPelis.html',
+			context,
+			context_instance=RequestContext(request))
+	def post(self,request,*args, **kwargs):
+
+		nombre = request.session['emailUser']
+		usuario = Usuario.objects.get(email=nombre)		
+		ver = True
+		vista = False		
+		col = True
+		ca= request.POST['calificacion']						
+		
+		pelicula = Pelicula.objects.get(codigo=args[0])
+		try:
+			calificacion = Calificacion(
+				email=usuario,
+				codigo=pelicula,
+				valor_Calificacion=ca,
+				)	
+			calificacion.save()	
+		except:
+			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+			calificacion.valor_Calificacion=ca
+			calificacion.save()
+		messages.info(request,"La pelicula fue calificada")
+		try:
+			porver = usuario.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
+		except:
+			pass
+		try:
+			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+			cal=str(calificacion.valor_Calificacion) + " Estrellas"
+		except:
+			cal="no ha sido calificado"
+		try:
+			vistas1 = usuario.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False				
+		except:
+			pass
+
+		try:
+			coleccion = Coleccion.objects.get(email=user)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
+		except:
+			pass
+
+		cines = Cine.objects.all()
+		authentication = True
+		context={'cal':cal,'cines':cines,'col':col,'authentication':authentication, 'nombre':nombre, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'user':usuario}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,

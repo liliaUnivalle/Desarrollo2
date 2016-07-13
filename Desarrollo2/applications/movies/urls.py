@@ -18,6 +18,7 @@ from .views import AgregarPorVer
 from .views import AgregarVistas
 from .views import ListarPorVer
 from .views import ListarVistas
+from .views import Calificar
 
 
 urlpatterns = [
@@ -36,4 +37,6 @@ urlpatterns = [
     url(r'^movies/vistas/(\d+)$', AgregarVistas.as_view(), name='vistas'),
     url(r'^movies/listarVistas/$', ListarPorVer.as_view(), name='listarPorVer'),
     url(r'^movies/listarPorVer/$', ListarVistas.as_view(), name='listarVistas'), 
+    url(r'^movies/calificar/(\d+)$', Calificar.as_view(), name='calificar'), 
+    
 ]
