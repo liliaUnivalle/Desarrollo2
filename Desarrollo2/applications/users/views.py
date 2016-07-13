@@ -272,7 +272,7 @@ class CrearNuevaLista(TemplateView):
 		authentication = True
 		valor = request.POST['nombreLista']
 		user = Usuario.objects.get(email=nombre)
-
+		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		try:
 			lista = Lista_personal.objects.get(nombre=valor, email=user)
 			messages.info(request,"la lista ya existe")
@@ -284,7 +284,6 @@ class CrearNuevaLista(TemplateView):
 			listaCreada.save()
 			messages.info(request,"la lista fue creada con exito")
 
-		listasPersonalizadas =  Lista_personal.objects.all()
 		context={'authentication':authentication, 'nombre':nombre, 'user':user, 'nombre2':nombre2, 'listasPersonalizadas':listasPersonalizadas }
 		return render_to_response(
 			'users/listasCliente.html',
@@ -369,6 +368,8 @@ class AgregarAListaPersonal(TemplateView):
 		ver = True
 		vista = True
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
+		generos = Genero.objects.all()
+
 		try:
 			pelicula = Pelicula.objects.get(codigo=args[0])
 
@@ -389,7 +390,7 @@ class AgregarAListaPersonal(TemplateView):
 
 		cines = Cine.objects.all()
 		authentication = True
-		context={'cines':cines,'authentication':authentication, 'nombre':nombre, 'user':usuario, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas}
+		context={'generos':generos,'cines':cines,'authentication':authentication, 'nombre':nombre, 'user':usuario, 'pelicula':pelicula, 'ver':ver, 'vista':vista, 'listasPersonalizadas': listasPersonalizadas}
 		return render_to_response(
 			'movies/infoPelis.html',
 			context,
