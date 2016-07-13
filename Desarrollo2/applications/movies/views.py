@@ -438,41 +438,38 @@ class VerMas(TemplateView):
 		vista = True
 		col = True
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
+		pelicula = Pelicula.objects.get(codigo=args[0])			
 		try:
-			pelicula = Pelicula.objects.get(codigo=args[0])			
-			try:
-				porver = user.get_porver()
-				tipos2 = porver.split(",")
-				for i in tipos2:
-					if i == pelicula.codigo:
-						ver = False
-			except:
-				pass
-			try:
-				calificacion = Calificacion.objects.get(email=user,codigo=pelicula)
-				cal=calificacion.valor_Calificacion + "Estrellas"
-			except:
-				cal="no ha sido calificado"
-			try:
-				vistas1 = user.get_vistas()
-				tipos1 = vistas1.split(",")
-				for i in tipos1:
-					if i == pelicula.codigo:
-						vista = False				
-			except:
-				pass
-
-			try:
-				coleccion = Coleccion.objects.get(email=user)
-				coleccion_peliculas = coleccion.get_contenido()
-				codigos = coleccion_peliculas.split(",")
-				for i in codigos:
-					if i == pelicula.codigo:
-						col = False
-			except:
-				pass
+			porver = user.get_porver()
+			tipos2 = porver.split(",")
+			for i in tipos2:
+				if i == pelicula.codigo:
+					ver = False
 		except:
-			pelicula = None
+			pass
+		try:
+			calificacion = Calificacion.objects.get(email=user,codigo=pelicula)
+			cal= str(calificacion.valor_Calificacion) + "Estrellas"
+		except:
+			cal="no ha sido calificado"
+		try:
+			vistas1 = user.get_vistas()
+			tipos1 = vistas1.split(",")
+			for i in tipos1:
+				if i == pelicula.codigo:
+					vista = False				
+		except:
+			pass
+
+		try:
+			coleccion = Coleccion.objects.get(email=user)
+			coleccion_peliculas = coleccion.get_contenido()
+			codigos = coleccion_peliculas.split(",")
+			for i in codigos:
+				if i == pelicula.codigo:
+					col = False
+		except:
+			pass
 
 		cines = Cine.objects.all()
 		
@@ -508,7 +505,7 @@ class AgregarPorVer(TemplateView):
 				pass
 			try:
 				calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
-				cal=calificacion.valor_Calificacion + "Estrellas"
+				cal=str(calificacion.valor_Calificacion) + "Estrellas"
 			except:
 				cal="no ha sido calificado"
 			try:
@@ -574,7 +571,7 @@ class AgregarVistas(TemplateView):
 			pass
 		
 		calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
-		cal=calificacion.valor_Calificacion + "Estrellas"
+		cal=str(calificacion.valor_Calificacion) + "Estrellas"
 		try:
 			vistas1 = usuario.get_vistas()
 			tipos1 = vistas1.split(",")
@@ -624,7 +621,7 @@ class AgregarVistas(TemplateView):
 			pass
 		try:
 			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
-			cal=calificacion.valor_Calificacion + "Estrellas"
+			cal=str(calificacion.valor_Calificacion) + "Estrellas"
 		except:
 			cal="no ha sido calificado"
 		try:
@@ -696,7 +693,7 @@ class Calificar(TemplateView):
 		nombre = request.session['emailUser']
 		usuario = Usuario.objects.get(email=nombre)		
 		ver = True
-		vista = False		
+		vista = True
 		col = True						
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)
 		pelicula = Pelicula.objects.get(codigo=args[0])
@@ -711,7 +708,7 @@ class Calificar(TemplateView):
 			pass
 		try:
 			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
-			cal=calificacion.valor_Calificacion + "Estrellas"
+			cal=str(calificacion.valor_Calificacion) + "Estrellas"
 		except:
 			cal="no ha sido calificado"
 		try:
@@ -745,24 +742,30 @@ class Calificar(TemplateView):
 		nombre = request.session['emailUser']
 		usuario = Usuario.objects.get(email=nombre)		
 		ver = True
-		vista = False		
+		vista = True		
 		col = True
 		ca= request.POST['calificacion']	
 		listasPersonalizadas =  Lista_personal.objects.filter(email=nombre)					
 		
 		pelicula = Pelicula.objects.get(codigo=args[0])
 		try:
-			calificacion = Calificacion(
-				email=usuario,
-				codigo=pelicula,
-				valor_Calificacion=ca,
-				)	
-			calificacion.save()	
+			usuario.lista_peliculas_vistas.get(codigo=pelicula.codigo)
+			try:
+
+				calificacion = Calificacion(
+					email=usuario,
+					codigo=pelicula,
+					valor_Calificacion=ca,
+					)	
+				calificacion.save()
+
+			except:
+				calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
+				calificacion.valor_Calificacion=ca
+				calificacion.save()
+			messages.info(request,"La pelicula fue calificada")
 		except:
-			calificacion = Calificacion.objects.get(email=usuario,codigo=pelicula)
-			calificacion.valor_Calificacion=ca
-			calificacion.save()
-		messages.info(request,"La pelicula fue calificada")
+			messages.info(request,"debe haber visto la pelicula")
 		try:
 			porver = usuario.get_porver()
 			tipos2 = porver.split(",")
@@ -794,6 +797,8 @@ class Calificar(TemplateView):
 					col = False
 		except:
 			pass
+
+
 
 		cines = Cine.objects.all()
 		authentication = True
