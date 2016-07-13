@@ -32,7 +32,7 @@ def extraerGeneroTotales():
 
 	generos = []
 	objGenero = tmdb.Genres()
-	lista = objGenero.list()
+	lista = objGenero.list(language='es')
 	generosInfo = lista[u'genres']
 	for i in generosInfo:
 		generos.append(i[u'name'])
