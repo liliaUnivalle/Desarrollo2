@@ -51,7 +51,6 @@
 				<div class="form-horizontal form-bordered" style="  margin-top: 2px;">
 	                <div class="col-md-5 ui-sortable">                	                            
 	                    <select name="lista" class="form-control">
-	                    	<option>Seleccionar lista</option>
 	                        {% for i in listasPersonalizadas %}
 	                            <option>{{i.nombre}}</option>
 	                        {% endfor %}
@@ -80,9 +79,9 @@
 	                        {% endfor %}
 	                    </select>	                        
 	            </div>	
-	            <div class="col-md-12 ui-sortable" style="  margin-top: 2px;">
-	            	<center><font color="white">Ya la vi</font></center>
-	        	</div>
+	            <div class="col-md-4 ui-sortable" style="  margin-top: 2px;"> 
+	            	<center><button style="  border: 2px solid#151515; background:#2E2E2E;" type="submit" class="form-control"><font color="white">Ya la vi</font></button></center>
+	            </div>
 	        </form>
             {% else%}
             	<div class="col-md-12 ui-sortable" style="  margin-top: 2px;">  
