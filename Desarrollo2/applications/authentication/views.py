@@ -41,7 +41,7 @@ def extraerGeneroTotales():
 def extraerGeneroTotalesBD():	
 
 	objGenero = tmdb.Genres()
-	lista = objGenero.list()
+	lista = objGenero.list(language='es')
 	generosInfo = lista[u'genres']
 	for i in generosInfo:
 		genero = Genero (

@@ -60,7 +60,7 @@ def crearPeliculaBD(json, tipo):
 
 def extraerReviewsBD(id, pelicula):
 	movie = tmdb.Movies(id)
-	criticas = movie.reviews()
+	criticas = movie.reviews(language='es')
 	#print(criticas)
 
 	if criticas['total_results'] != 0:
@@ -82,7 +82,7 @@ def extraerGeneroBD(genres, pelicula):
 	if len(genres) != 0:
 
 		objGenero = tmdb.Genres()
-		lista = objGenero.list()
+		lista = objGenero.list(language='es')
 
 		for n in genres:
 			for f in objGenero.genres:
@@ -109,7 +109,7 @@ def consultarTendencia(x):
 	numPelis = x
 
 	movie = tmdb.Movies()
-	tendencia = movie.popular()
+	tendencia = movie.popular(language='es')
 	tipo_p = Tipo.objects.get(nombre="Tendencia")
 	for n in movie.results:
 
@@ -119,13 +119,12 @@ def consultarTendencia(x):
 			pelicula_p = Pelicula.objects.get(codigo=n)
 			pelicula_p.tipos.add(tipo_p)
 		except:
-			if n['media_type'] == 'movie':
-				crearPeliculaBD(n, "Tendencia")
+			crearPeliculaBD(n, "Tendencia")
 
 def consultarEnCartelera(x):
 	tipo_p = Tipo.objects.get(nombre="Cartelera")
 	movie = tmdb.Movies()
-	estreno = movie.now_playing()
+	estreno = movie.now_playing(language='es')
 
 	for n in movie.results:
 
@@ -133,23 +132,20 @@ def consultarEnCartelera(x):
 			pelicula_p = Pelicula.objects.get(codigo=n)
 			pelicula_p.tipos.add(tipo_p)
 		except:
-			if n['media_type'] == 'movie':
-				crearPeliculaBD(n, "Cartelera")
+			crearPeliculaBD(n, "Cartelera")
 
-		numPelis = numPelis - 1
 
 def consultarEstrenos():
 	tipo_p = Tipo.objects.get(nombre="Estrenos")
 	movie = tmdb.Movies()
-	estreno = movie.upcoming()
+	estreno = movie.upcoming(language='es')
 	
 	for n in movie.results:
 		try:
 			pelicula_p = Pelicula.objects.get(codigo=n)
 			pelicula_p.tipos.add(tipo_p)
 		except:
-			if n['media_type'] == 'movie':
-				pelicula = crearPeliculaBD(n, "Estrenos")
+			pelicula = crearPeliculaBD(n, "Estrenos")
 
 
 def listasPeliculas():
@@ -177,7 +173,7 @@ def listasPeliculas():
 def consultaPorTitulo(titulo):
 
 	search = tmdb.Search()
-	response = search.movie(query=titulo)
+	response = search.movie(query=titulo, language='es')
 	peliculasTitulo= []
 
 	if search.total_results != 0:
@@ -197,7 +193,7 @@ def consultaPorGenero(genero, z):
 	peliculasGenero = []
 	generos= tmdb.Genres(genero)
 	print generos
-	response = generos.movies()
+	response = generos.movies(language='es')
 
 	if generos.total_results != 0:
 
@@ -217,7 +213,7 @@ def consultaSimilares(pelicula, z):
 
 	peliculas = []
 	pelis= tmdb.Movies(pelicula)
-	response = pelis.similar_movies()
+	response = pelis.similar_movies(language='es')
 
 	if pelis.total_results != 0:
 
@@ -238,7 +234,7 @@ def consultaPorActor(actor):
 	peliculasActor = []
 
 	search = tmdb.Search()
-	response = search.person(query=actor)
+	response = search.person(query=actor, language='es')
 	
 	if search.total_results != 0:
 
